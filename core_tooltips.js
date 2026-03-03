@@ -18,34 +18,62 @@ window.getPickTooltipHtml = function(name) {
 
     let sportKey = window.activeSportKey || "";
     let finalContent = ""; 
-    rawText = rawText.replace(/<br\s*[\/]?>/gi, '\n');
+rawText = rawText.replace(/<br\s*[\/]?>/gi, '\n');
+    
     if (sportKey !== "") {
-        let targetKeywords = [];
-        if (sportKey.includes('nba')) targetKeywords = ['nba', '籃', '🏀'];
-        else if (sportKey.includes('mlb')) targetKeywords = ['mlb', '棒', '⚾'];
-        else if (sportKey.includes('soccer')) targetKeywords = ['足', '⚽', '英超', '西甲'];
-        else if (sportKey.includes('nhl') || sportKey.includes('khl')) targetKeywords = ['冰', '🏒', 'nhl', 'khl'];
-        else if (['euro','nbl','jp','kbl','cba'].some(k => sportKey.includes(k))) targetKeywords = ['籃', '🏀'];
-        else if (sportKey.includes('lol')) targetKeywords = ['電競', '🎮', 'lol'];
-        let allCategoryRegex = /(nba|mlb|nhl|khl|⚽|🏒|🏀|⚾|🎮|美籃|美棒|足球|冰球|籃|棒|電競)/i;
-        if (allCategoryRegex.test(rawText) && targetKeywords.length > 0) {
-            let targetRegex = new RegExp("(" + targetKeywords.join('|') + ")", "i");
+        // 1. 載入您的專屬賽事名稱字典
+        const itemNames = {
+            "nba_team": "NBA 讓分盤", "nba_total": "NBA 大小分",
+            "mlb_ml": "MLB 獨贏(正常)", "mlb_runline": "MLB 讓分盤", "mlb_total": "MLB 大小分", "mlb_ml_high": "MLB 高賠獨贏",
+            "nhl_ml": "冰球獨贏(含加時)", "nhl_ml_reg": "冰球獨贏(不含加時)", "nhl_spread_ot": "冰球讓盤(含加時)", "nhl_spread_reg": "冰球讓盤(不含加時)", "nhl_total_ot": "冰球大小(含加時)", "nhl_total_reg": "冰球大小(不含加時)", "khl_team": "俄冰隊伍", "khl_total": "俄冰大小分",
+            "soccer_team": "足球隊伍", "soccer_total": "足球大小分", "soccer_ml": "足球獨贏", "soccer_btts": "足球兩隊進球",
+            "euro_team": "歐籃隊伍", "euro_total": "歐籃大小", "cba_team": "中籃隊伍", "kbl_team": "韓籃隊伍", "kbl_total": "韓籃大小", "nbl_team": "澳籃隊伍",
+            "lol_team": "電競隊伍", "lol_total": "電競大小"
+        };
+        
+        let targetHeader = itemNames[sportKey]; // 抓出目前用戶停在哪個分頁
+        let allHeaders = Object.values(itemNames); // 所有的賽事名稱
+        
+        // 判斷文字中是否有包含「任何」一個您的專屬賽事標題
+        let hasAnyHeader = allHeaders.some(h => rawText.includes(h));
+        
+        if (hasAnyHeader && targetHeader && rawText.includes(targetHeader)) {
+            // 🎯 進入精準切西瓜模式
             let lines = rawText.split('\n');
             let outputLines = [];
             let isMatchingBlock = false;
+            
             for (let line of lines) {
                 let textLine = line.trim();
-                if (!textLine) continue; 
-                let isCategoryHeader = allCategoryRegex.test(textLine);
-                let isTargetHeader = targetRegex.test(textLine);
-                if (isTargetHeader) { isMatchingBlock = true; outputLines.push(line); } 
-                else if (isCategoryHeader) { isMatchingBlock = false; } 
-                else { if (isMatchingBlock) outputLines.push(line); }
+                if (!textLine) continue;
+                
+                // 檢查這行是不是某個賽事標題
+                let isAnyHeader = allHeaders.some(h => textLine.includes(h));
+                let isTargetHeader = textLine.includes(targetHeader);
+                
+                if (isTargetHeader) {
+                    isMatchingBlock = true; // 是目標標題，開始讀取！
+                    outputLines.push(`<span style="color:#fbbf24; font-weight:bold;">[${textLine}]</span>`);
+                } else if (isAnyHeader) {
+                    isMatchingBlock = false; // 遇到別的賽事標題，關閉讀取！
+                } else {
+                    if (isMatchingBlock) outputLines.push(line); // 把推薦內容放進去
+                }
             }
             if (outputLines.length > 0) finalContent = outputLines.join('<br>');
             else return ''; 
-        } else { finalContent = rawText.replace(/\n/g, '<br>'); }
-    } else { finalContent = rawText.replace(/\n/g, '<br>'); }
+            
+        } else if (hasAnyHeader) {
+            // 文本裡有標題，但「沒有」當前頁面的標題 -> 隱藏泡泡 (不該在這裡出現)
+            return '';
+        } else {
+            // 文本裡什麼標題都沒寫 (通用推薦) -> 全部顯示
+            finalContent = rawText.replace(/\n/g, '<br>');
+        }
+    } else { 
+        finalContent = rawText.replace(/\n/g, '<br>'); 
+    }
+
     if (!finalContent.trim()) return '';
     let isSaved = window.userPocket.includes(name);
     let btnText = isSaved ? '⭐ 已收錄' : '➕ 收錄口袋';
