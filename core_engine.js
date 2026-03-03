@@ -2,7 +2,7 @@
 /* ==== 【組件 E：核心引擎 - core_engine.js】 ==== */
 /* ============================================================== */
 
-const DB_KEY = 'DashboardDB_V76_Final'; 
+const DB_KEY = 'DashboardDB_V77_Final'; 
 window.dataDB = JSON.parse(localStorage.getItem(DB_KEY));
 window.isNegativeMode = false; // 🪄 魔法反向開關
 
@@ -313,5 +313,6 @@ window.toggleExpert = function(n, el) {
     if (typeof window.updateTabHighlights === 'function') window.updateTabHighlights();
     if (document.getElementById('details').style.display === 'block') window.renderDisplay();
 };
+
 
 window.init();
