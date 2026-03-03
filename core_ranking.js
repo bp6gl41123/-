@@ -106,12 +106,9 @@ window.getRankBanner = function(title, name, key) {
 
 
 window.buildHTML = function(list, limitTo20, expertName = null, sportKey = null, prefixBtn = '') {
-    
-    // 💡 2026 億級權限鎖：這是「隱身術」的核心開關
-    // 必須嚴格檢查 window.isAdmin 是否「絕對等於」true
-    const canEdit = (window.isAdmin === true); 
+    // 💡 2026 億級權限鎖：強制鎖定 window.isAdmin 狀態，不依賴功能函數是否存在
+    const canEdit = (window.isAdmin === true);
 
-    // 下面這一行會決定「新增戰績」按鈕要不要印出來給用戶看
     let addBtnHtml = (expertName && sportKey && canEdit) ? 
         `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <div class="func-left">${prefixBtn}</div>
