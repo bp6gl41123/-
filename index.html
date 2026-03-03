@@ -178,6 +178,17 @@
         @keyframes bronze-pulse { 0% { box-shadow: 0 0 15px 5px rgba(234, 88, 12, 0.5); } 50% { box-shadow: 0 0 25px 10px rgba(234, 88, 12, 0.8); } 100% { box-shadow: 0 0 15px 5px rgba(234, 88, 12, 0.5); } }
         .rank-3 { animation: bronze-pulse 3.5s infinite ease-in-out !important; border-color: #ea580c !important; z-index: 12; }
 
+        /* 🪄 反向魔法陣容專屬：紅色泛光動畫 (Ferrari Red) */
+        @keyframes magic-red-pulse { 
+            0% { box-shadow: 0 0 15px 5px rgba(220, 38, 38, 0.4); } 
+            50% { box-shadow: 0 0 30px 15px rgba(220, 38, 38, 0.7); } 
+            100% { box-shadow: 0 0 15px 5px rgba(220, 38, 38, 0.4); } 
+        }
+        
+        /* 當切換到反向模式 (.mode-neg) 時，前三名改跑紅光，且與翻轉動畫連動 */
+        body.mode-neg .rank-1 { animation: flipFromWhite 0.6s forwards !important, magic-red-pulse 2.5s infinite ease-in-out !important; border-color: #ef4444 !important; }
+        body.mode-neg .rank-2 { animation: flipFromWhite 0.6s forwards !important, magic-red-pulse 3s infinite ease-in-out !important; border-color: #dc2626 !important; }
+        body.mode-neg .rank-3 { animation: flipFromWhite 0.6s forwards !important, magic-red-pulse 3.5s infinite ease-in-out !important; border-color: #991b1b !important; }
 
 /* 😴 休眠圖示的專屬樣式 */
         .sleep-icon {
@@ -258,18 +269,18 @@
             </div>
         </div>
     </div>
-
-<script src="data.js"></script>
-    <script src="config.js"></script>
+<script src="config.js"></script>
+    <script src="data.js"></script>
     <script src="auth.js"></script>
+    <script src="core_admin.js"></script>
+    <script src="core_backup.js"></script>
+    <script src="core_settle.js"></script>
+    <script src="core_pocket.js"></script>
+    <script src="core_utils.js"></script>
+    <script src="core_tooltips.js"></script>
+    <script src="core_trend.js"></script>
+    <script src="core_ranking.js"></script>
     <script src="core_engine.js"></script>
-    <script src="core_addons.js"></script>  <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof init === 'function') {
-                init();
-            }
-        });
-    </script>
 
 </body>
 </html>
