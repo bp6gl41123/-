@@ -10,7 +10,7 @@ window.adminDelRecord = function(expertName, sportKey, dateStr, wlStr) {
         let idx = window.dataDB[expertName][sportKey].findIndex(r => r[0] === dateStr && r[1] === wlStr); 
         if(idx > -1) { 
             window.dataDB[expertName][sportKey].splice(idx, 1); 
-            localStorage.setItem('DashboardDB_V76_Final', JSON.stringify(window.dataDB)); 
+            localStorage.setItem('DashboardDB_V77_Final', JSON.stringify(window.dataDB)); 
             if (typeof window.renderDisplay === 'function') window.renderDisplay(); 
             if (typeof window.init === 'function') window.init(); 
         } 
@@ -46,4 +46,5 @@ window.adminAddRecord = function(expertName, sportKey) {
     localStorage.setItem('DashboardDB_V62_Final', JSON.stringify(window.dataDB)); 
     if (typeof window.renderDisplay === 'function') window.renderDisplay(); 
     if (typeof window.init === 'function') window.init(); 
+
 };
