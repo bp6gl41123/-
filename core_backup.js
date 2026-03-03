@@ -16,11 +16,11 @@ window.exportToDataJS = function() {
         console.log(output);
     }); 
 };
-
-setTimeout(() => { 
-// 💡 只有管理員能看到備份按鈕
-if (window.isAdmin !== true) return;
+// 💡 修正：定義為全域函數，待 auth.js 驗證成功後再啟動
+window.initBackupWidget = function() {
+    if (window.isAdmin !== true) return;
     if(!document.getElementById('exportBtn')){
+
         const btn = document.createElement("div"); 
         btn.id = 'exportBtn';
         btn.innerHTML = "💾 備份與匯出實體檔案代碼"; 
@@ -28,6 +28,8 @@ if (window.isAdmin !== true) return;
         btn.onmouseover = function() { this.style.transform = "scale(1.05) translateY(-3px)"; };
         btn.onmouseout = function() { this.style.transform = "scale(1) translateY(0)"; };
         btn.onclick = window.exportToDataJS; 
-        document.body.appendChild(btn); 
+document.body.appendChild(btn); 
     }
-}, 1800);
+}; // ✅ 改成函數結尾
+
+
