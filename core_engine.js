@@ -96,10 +96,6 @@ body.mode-neg .expert-card {
         }
         /* 💡 移除 podium-card 的強制單一動畫，交給 index.html 統一控光 */
 
-        /* 🪄 設定 1 個 1 個依序翻轉的延遲時間 */
-    
-        /* 之後的卡片會套用預設動畫，若要更多可依此類推 */
-
         body.mode-neg .podium-card { background: linear-gradient(135deg, #7f1d1d, #450a0a); border-color: #ef4444; }
 
         .mode-neg .rank-net { color: #f87171 !important; }
@@ -176,10 +172,19 @@ window.userPocket = JSON.parse(localStorage.getItem('UserPocketDB')) || [];
 window.activeSportKey = "";  
 window.currentHomeFilter = 'all';
 
-window.toggleUserPocket = function(expertName, btnElement) {
-    const idx = window.userPocket.indexOf(expertName);
-    if (idx > -1) { window.userPocket.splice(idx, 1); btnElement.className = 'pocket-add-btn'; btnElement.innerHTML = '➕ 收錄口袋'; } 
-    else { window.userPocket.push(expertName); btnElement.className = 'pocket-add-btn saved'; btnElement.innerHTML = '⭐ 已收錄'; }
+// 🎯 【修復內鬼】這裡已經同步更新為有 sportKey 的新版邏輯！不會再覆蓋丟失賽事標籤了。
+window.toggleUserPocket = function(expertName, btnElement, sportKey) {
+    let pocketKey = sportKey ? `${expertName}||${sportKey}` : expertName;
+    const idx = window.userPocket.indexOf(pocketKey);
+    if (idx > -1) { 
+        window.userPocket.splice(idx, 1); 
+        btnElement.className = 'pocket-add-btn'; 
+        btnElement.innerHTML = '➕ 收錄口袋'; 
+    } else { 
+        window.userPocket.push(pocketKey); 
+        btnElement.className = 'pocket-add-btn saved'; 
+        btnElement.innerHTML = '⭐ 已收錄'; 
+    }
     localStorage.setItem('UserPocketDB', JSON.stringify(window.userPocket));
     if (typeof window.updatePocketWidget === 'function') window.updatePocketWidget(); 
 };
@@ -315,3 +320,63 @@ window.toggleExpert = function(n, el) {
 };
 
 window.init();
+
+
+/* ============================================================== */
+/* ==== 補充電線：好手賽事發光特效模組 ==== */
+/* ============================================================== */
+window.updateTabHighlights = function() {
+    const tabs = document.querySelectorAll('#tabContainer .sport-tab');
+    const categories = document.querySelectorAll('#tabContainer .dropdown-wrapper');
+    
+    // 1. 如果沒有選擇任何好手，恢復全部預設狀態 (不亮也不灰)
+    if (window.selectedExperts.length === 0) {
+        tabs.forEach(t => { t.classList.remove('tab-highlight', 'tab-dimmed'); });
+        categories.forEach(c => { 
+            const btn = c.querySelector('.category-btn');
+            if (btn) btn.classList.remove('tab-highlight', 'tab-dimmed'); 
+        });
+        return;
+    }
+
+    // 2. 收集目前選中的好手，他們「有預測資料」的所有賽事 Key
+    let activeKeys = new Set();
+    window.selectedExperts.forEach(name => {
+        if (window.dataDB[name]) {
+            for (let key in window.dataDB[name]) {
+                if (window.dataDB[name][key] && window.dataDB[name][key].length > 0) {
+                    activeKeys.add(key);
+                }
+            }
+        }
+    });
+
+    // 3. 更新各個小標籤的狀態
+    tabs.forEach(tab => {
+        // 從 tab 的 id (例如 'l-nba_team') 取出賽事 key ('nba_team')
+        let sportKey = tab.id.replace('l-', '');
+        
+        if (activeKeys.has(sportKey)) {
+            tab.classList.add('tab-highlight');
+            tab.classList.remove('tab-dimmed');
+        } else {
+            tab.classList.add('tab-dimmed');
+            tab.classList.remove('tab-highlight');
+        }
+    });
+
+    // 4. 更新外層大分類按鈕的狀態 (只要底下有任何一個子項目發光，母按鈕就跟著發光)
+    categories.forEach(wrapper => {
+        const btn = wrapper.querySelector('.category-btn');
+        const hasActiveChild = wrapper.querySelector('.tab-highlight');
+        if (btn) {
+            if (hasActiveChild) {
+                btn.classList.add('tab-highlight');
+                btn.classList.remove('tab-dimmed');
+            } else {
+                btn.classList.add('tab-dimmed');
+                btn.classList.remove('tab-highlight');
+            }
+        }
+    });
+};

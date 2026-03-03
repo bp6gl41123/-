@@ -2,24 +2,24 @@
 /* ==== 【功能模組：口袋系統 - core_pocket.js】 ==== */
 /* ============================================================== */
 
-// 🌟 [關鍵修復] 必須在這裡提早讀取記憶，否則一開網頁會找不到資料導致按鈕關不掉！
 window.userPocket = JSON.parse(localStorage.getItem('UserPocketDB')) || [];
 
-// 🎯 處理點擊「➕ 收錄口袋」的邏輯，並叫出右側橘色大口袋
-window.toggleUserPocket = function(expertName, btnElement) {
-    const idx = window.userPocket.indexOf(expertName);
+// 🎯 【關鍵升級 3】接收並組合 sportKey，形成聯合鑰匙存入資料庫
+window.toggleUserPocket = function(expertName, btnElement, sportKey) {
+    let pocketKey = sportKey ? `${expertName}||${sportKey}` : expertName;
+    
+    const idx = window.userPocket.indexOf(pocketKey);
     if (idx > -1) { 
         window.userPocket.splice(idx, 1); 
         btnElement.className = 'pocket-add-btn'; 
         btnElement.innerHTML = '➕ 收錄口袋'; 
     } else { 
-        window.userPocket.push(expertName); 
+        window.userPocket.push(pocketKey); 
         btnElement.className = 'pocket-add-btn saved'; 
         btnElement.innerHTML = '⭐ 已收錄'; 
     }
     localStorage.setItem('UserPocketDB', JSON.stringify(window.userPocket));
     
-    // 💡 呼叫更新面板函數，讓橘色大口袋根據陣列長度顯示或隱藏
     if (typeof window.updatePocketWidget === 'function') window.updatePocketWidget(); 
 };
 
@@ -45,6 +45,8 @@ window.toggleUserPocket = function(expertName, btnElement) {
             .pocket-modal-footer { padding: 30px; text-align: center; background: white; border-top: 1px solid #e2e8f0; }
             .pocket-clear-btn { background: #f1f5f9; color: #64748b; border: 2px solid #cbd5e1; padding: 14px 35px; border-radius: 15px; cursor: pointer; font-weight: 900; transition: 0.3s; font-size: 16px; }
             .pocket-clear-btn:hover { background: #dc2626; color: white; border-color: #dc2626; transform: scale(1.05); }
+            /* 💡 新增的標籤 CSS */
+            .pocket-sport-tag { font-size: 14px; background: #e2e8f0; color: #475569; padding: 4px 10px; border-radius: 6px; font-weight: bold; margin-left: 10px; vertical-align: middle; }
         `; document.head.appendChild(style);
     }
 
@@ -80,9 +82,26 @@ window.toggleUserPocket = function(expertName, btnElement) {
         const listArea = document.getElementById('pocketListArea'); listArea.innerHTML = '';
         if (window.userPocket.length === 0) { 
             listArea.innerHTML = '<div style="padding: 100px 20px; text-align: center; color: #94a3b8; font-weight:bold; font-size:20px;">您的預測口袋目前空空如也！<br><small style="font-weight:normal;">快去排行榜點擊「➕ 收錄口袋」吧！</small></div>'; 
-} else {
-            window.userPocket.forEach((name, index) => {
-                // 🎯 [核心修復] 讓口袋面板也能支援「陣列格式」的 todayPicks
+        } else {
+            const itemNames = {
+                "nba_team": "NBA 讓分盤", "nba_total": "NBA 大小分",
+                "mlb_ml": "MLB 獨贏", "mlb_runline": "MLB 讓分盤", "mlb_total": "MLB 大小分", "mlb_ml_high": "MLB 高賠獨贏",
+                "nhl_ml": "冰球獨贏(含加時)", "nhl_ml_reg": "冰球獨贏(不含加時)", "nhl_spread_ot": "冰球讓盤(含加時)", "nhl_spread_reg": "冰球讓盤(不含加時)", "nhl_total_ot": "冰球大小(含加時)", "nhl_total_reg": "冰球大小(不含加時)", "khl_team": "俄冰隊伍", "khl_total": "俄冰大小分",
+                "soccer_team": "足球隊伍", "soccer_total": "足球大小分", "soccer_ml": "足球獨贏", "soccer_btts": "足球兩隊進球",
+                "euro_team": "歐籃隊伍", "euro_total": "歐籃大小", "cba_team": "中籃隊伍", "kbl_team": "韓籃隊伍", "kbl_total": "韓籃大小", "nbl_team": "澳籃隊伍",
+                "lol_team": "電競隊伍", "lol_total": "電競大小"
+            };
+
+            window.userPocket.forEach((pocketKey, index) => {
+                // 🎯 【關鍵升級 4】將「聯合鑰匙」解鎖，拆出「名字」跟「當時的賽事標籤」
+                let name = pocketKey;
+                let savedSportKey = "";
+                if (pocketKey.includes("||")) {
+                    let parts = pocketKey.split("||");
+                    name = parts[0];
+                    savedSportKey = parts[1];
+                }
+
                 let rawText = "";
                 if (typeof todayPicks !== 'undefined') {
                     if (Array.isArray(todayPicks)) {
@@ -92,12 +111,26 @@ window.toggleUserPocket = function(expertName, btnElement) {
                         rawText = todayPicks[name] || "";
                     }
                 }
-                let pickText = rawText ? rawText.replace(/\n/g, '<br>') : '今日該好手尚未發布任何推薦';
+                
+                // 🎯 【關鍵升級 5】不管外面畫面怎麼切，永遠強制用「存檔時的賽事濾鏡」切西瓜
+                let filteredText = "";
+                if (typeof window.filterPickText === 'function') {
+                    filteredText = window.filterPickText(rawText, savedSportKey);
+                } else {
+                    filteredText = rawText ? rawText.replace(/\n/g, '<br>') : '';
+                }
+
+                let pickText = filteredText ? filteredText : '<span style="color:#94a3b8; font-weight:normal;">今日該好手尚未發布任何推薦</span>';
+                
+                // 💡 加上視覺小標籤，例如「傲慢20 [NBA 讓分盤]」
+                let tagHtml = savedSportKey ? `<span class="pocket-sport-tag">${itemNames[savedSportKey] || '通用'}</span>` : '';
 
                 listArea.innerHTML += `
-
                 <li class="pocket-item" style="animation-delay: ${index * 0.1}s;">
-                    <div class="pocket-item-name">${name} <span class="pocket-remove-btn" onclick="window.removePocketItem('${name}')">移除</span></div>
+                    <div class="pocket-item-name">
+                        <div>${name} ${tagHtml}</div>
+                        <span class="pocket-remove-btn" onclick="window.removePocketItem('${pocketKey}')">移除</span>
+                    </div>
                     <div class="pocket-item-text">${pickText}</div>
                 </li>`;
             });
@@ -107,8 +140,9 @@ window.toggleUserPocket = function(expertName, btnElement) {
 
     window.closePocketModal = () => overlay.classList.remove('show');
     
-    window.removePocketItem = (name) => {
-        const idx = window.userPocket.indexOf(name);
+    // 🎯 刪除按鈕邏輯也升級為對準「聯合鑰匙」
+    window.removePocketItem = (pocketKey) => {
+        const idx = window.userPocket.indexOf(pocketKey);
         if(idx > -1) { 
             window.userPocket.splice(idx, 1); 
             localStorage.setItem('UserPocketDB', JSON.stringify(window.userPocket)); 
