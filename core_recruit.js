@@ -134,16 +134,24 @@ window.updateRecruitWidget = () => {
             floatBtn.style.display = 'none'; 
         }
     };
-    window.openRecruitModal = () => {
+window.openRecruitModal = () => {
         const listArea = document.getElementById('recruitListArea'); listArea.innerHTML = '';
         if (window.userRecruit.length === 0) { 
             listArea.innerHTML = '<div style="padding: 80px 20px; text-align: center; color: #94a3b8; font-weight:bold; font-size:18px;">目前尚無收入麾下的好手。</div>'; 
         } else {
+            // 🎯 升級完整字典，確保所有賽事(含日棒)標籤正確顯示
             const itemNames = {
-                "nba_team": "NBA 讓分盤", "nba_total": "NBA 大小分", "mlb_ml": "MLB 獨贏", "mlb_runline": "MLB 讓分盤", "mlb_total": "MLB 大小分"
-            }; // 簡化展示名，找不到就顯示原始key
+                "npb_runline": "日棒讓分", "npb_ml": "日棒獨贏", "npb_total": "日棒大小", "npb_1h_runline": "日棒上半讓分", "npb_1h_ml": "日棒上半獨贏", "npb_1h_total": "日棒上半大小",
+                "nba_team": "NBA 讓分盤", "nba_total": "NBA 大小分",
+                "mlb_ml": "MLB 獨贏", "mlb_runline": "MLB 讓分盤", "mlb_total": "MLB 大小分", "mlb_ml_high": "MLB 高賠獨贏",
+                "nhl_ml": "冰球獨贏(含加時)", "nhl_ml_reg": "冰球獨贏(不含加時)", "nhl_spread_ot": "冰球讓盤(含加時)", "nhl_spread_reg": "冰球讓盤(不含加時)", "nhl_total_ot": "冰球大小(含加時)", "nhl_total_reg": "冰球大小(不含加時)", "khl_team": "俄冰隊伍", "khl_total": "俄冰大小分",
+                "soccer_team": "足球隊伍", "soccer_total": "足球大小分", "soccer_ml": "足球獨贏", "soccer_btts": "足球兩隊進球",
+                "euro_team": "歐籃隊伍", "euro_total": "歐籃大小", "cba_team": "中籃隊伍", "kbl_team": "韓籃隊伍", "kbl_total": "韓籃大小", "nbl_team": "澳籃隊伍",
+                "lol_team": "電競隊伍", "lol_total": "電競大小"
+            };
 
             window.userRecruit.forEach((recruitKey) => {
+
                 let name = recruitKey, savedSportKey = "";
                 if (recruitKey.includes("||")) {
                     let parts = recruitKey.split("||");
@@ -185,14 +193,14 @@ window.updateRecruitWidget = () => {
         if (typeof window.renderDisplay === 'function') window.renderDisplay();
     };
 
-    /* 🛡️ 核心黑科技：1:1 唯讀預覽卡片特效 */
+/* 🛡️ 核心黑科技：1:1 唯讀預覽卡片特效 (絕對置中升級版) */
     window.showRecruitPreview = function(expertName, sportKey, event) {
         let tooltip = document.getElementById('recruitPreviewBox');
         if(!tooltip) {
             tooltip = document.createElement('div');
             tooltip.id = 'recruitPreviewBox';
-            // 💡 pointer-events: none 是關鍵！它讓卡片變成絕對唯讀的影像，無法點擊裡面的任何按鈕
-            tooltip.style.cssText = 'position:fixed; z-index:10005; pointer-events:none; width:300px; transform:scale(0.9); transform-origin: top left; transition:opacity 0.2s; background:transparent; border-radius:12px; box-shadow:0 25px 50px rgba(0,0,0,0.6); opacity:0;';
+            // 💡 絕對置中魔法：將 transform 加入 translateY(-50%)，讓它永遠垂直置中
+            tooltip.style.cssText = 'position:fixed; z-index:10005; pointer-events:none; width:300px; transform:translateY(-50%) scale(0.95); transform-origin: center center; transition:opacity 0.2s; background:transparent; border-radius:12px; box-shadow:0 30px 60px rgba(0,0,0,0.7); opacity:0;';
             document.body.appendChild(tooltip);
         }
 
@@ -212,9 +220,9 @@ window.updateRecruitWidget = () => {
         let cardHtml = window.renderRankCard(mockItem, isReverse ? -1 : 0, sportKey, isReverse); 
         tooltip.innerHTML = `<div style="background:#fff; border-radius:8px; overflow:hidden;">${cardHtml}</div>`;
         
-        // 讓預覽框自動顯示在滑鼠或名單的左側 (避免遮擋名單)
-        tooltip.style.left = (event.clientX - 320) + 'px';
-        tooltip.style.top = Math.max(20, event.clientY - 150) + 'px';
+        // 💡 排版校正：高度鎖定在螢幕正中央 (50%)，水平位置跟隨滑鼠左側
+        tooltip.style.left = Math.max(20, event.clientX - 330) + 'px';
+        tooltip.style.top = '50%';
         tooltip.style.opacity = '1';
     };
 
