@@ -17,8 +17,25 @@ if (!document.getElementById('pickTooltipStyle')) {
         .pick-icon:hover { animation: none; transform: scale(1.08); background: #fef3c7; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
         @keyframes floatPulse { 0% { transform: translateY(0px); } 50% { transform: translateY(-3px); } 100% { transform: translateY(0px); } }
 
-        .pick-tooltip { visibility: hidden; opacity: 0; position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #1e293b, #0f172a); color: #fbbf24; text-align: left; padding: 14px 18px; border-radius: 12px; border: 1px solid #fbbf24; min-width: 180px; max-width: 260px; white-space: normal; z-index: 10000; font-size: 15px; font-weight: bold; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: 0.3s; pointer-events: auto; line-height: 1.6; letter-spacing: 0.5px; }
+.pick-tooltip { 
+            visibility: hidden; opacity: 0; position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); 
+            background: linear-gradient(135deg, #1e293b, #0f172a); color: #fbbf24; text-align: left; padding: 14px 18px; 
+            border-radius: 12px; border: 1px solid #fbbf24; 
+            /* 稍微加寬，讓閱讀更舒適 */
+            min-width: 220px; max-width: 280px; white-space: normal; 
+            z-index: 10000; font-size: 14px; font-weight: bold; box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+            transition: 0.3s; pointer-events: auto; line-height: 1.6; letter-spacing: 0.5px; 
+            /* 🎯 核心防護：限制最高高度，超過自動顯示捲軸，並防止滾動穿透 */
+            max-height: 220px; overflow-y: auto; overscroll-behavior: contain; 
+        }
+        
+        /* 🎨 替暗黑泡泡框加上高質感的專屬金色小捲軸 */
+        .pick-tooltip::-webkit-scrollbar { width: 6px; }
+        .pick-tooltip::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); border-radius: 8px; }
+        .pick-tooltip::-webkit-scrollbar-thumb { background: #fbbf24; border-radius: 8px; }
+
         .pick-tooltip::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: #fbbf24 transparent transparent transparent; }
+
         .pick-tooltip-container:hover .pick-tooltip, .pick-tooltip.show-mobile { visibility: visible; opacity: 1; bottom: 145%; }
         .pk-column:hover { z-index: 10; } 
         .pk-column .pick-tooltip { bottom: auto; top: 130%; }
@@ -286,11 +303,12 @@ window.init = function() {
         `;
     }
 
-    const tabs = document.getElementById('tabContainer');
+const tabs = document.getElementById('tabContainer');
     if (tabs && tabs.innerHTML === '') {
         const categories = [ 
             { name: '🏀 美籃 NBA', items: [ { id: 'nba_team', label: 'NBA 讓分盤' }, { id: 'nba_total', label: 'NBA 大小分' } ] }, 
             { name: '⚾ 美棒 MLB', items: [ { id: 'mlb_ml', label: 'MLB 獨贏(正常)' }, { id: 'mlb_runline', label: 'MLB 讓分盤' }, { id: 'mlb_total', label: 'MLB 大小分' }, { id: 'mlb_ml_high', label: 'MLB 高賠獨贏' } ] },
+            { name: '🇯🇵 日棒 NPB', items: [ { id: 'npb_runline', label: '日棒讓分' }, { id: 'npb_ml', label: '日棒獨贏' }, { id: 'npb_total', label: '日棒大小' }, { id: 'npb_1h_runline', label: '日棒上半讓分' }, { id: 'npb_1h_ml', label: '日棒上半獨贏' }, { id: 'npb_1h_total', label: '日棒上半大小' } ] },
             { name: '⚽ 足球系列', items: [ { id: 'soccer_team', label: '足球隊伍' }, { id: 'soccer_total', label: '足球大小分' }, { id: 'soccer_ml', label: '足球獨贏' }, { id: 'soccer_btts', label: '足球兩隊進球' } ] },
             { name: '🏒 冰球系列', items: [ { id: 'nhl_ml', label: '冰球獨贏(含加時)' }, { id: 'nhl_ml_reg', label: '冰球獨贏(不含加時)' }, { id: 'nhl_spread_ot', label: '冰球讓盤(含加時)' }, { id: 'nhl_spread_reg', label: '冰球讓盤(不含加時)' }, { id: 'nhl_total_ot', label: '冰球大小(含加時)' }, { id: 'nhl_total_reg', label: '冰球大小(不含加時)' }, { id: 'khl_team', label: '俄冰隊伍' }, { id: 'khl_total', label: '俄冰大小分' } ] },
             { name: '🌏 亞洲/歐籃', items: [ { id: 'euro_team', label: '歐籃隊伍' }, { id: 'euro_total', label: '歐籃大小' }, { id: 'nbl_team', label: '澳籃隊伍' }, { id: 'nbl_total', label: '澳籃大小' }, { id: 'jp_team', label: '日籃隊伍' }, { id: 'kbl_team', label: '韓籃隊伍' }, { id: 'kbl_total', label: '韓籃大小' }, { id: 'cba_team', label: '中籃隊伍' }, { id: 'cba_total', label: '中籃大小' } ] }, 

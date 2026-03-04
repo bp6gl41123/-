@@ -78,12 +78,13 @@ window.toggleUserPocket = function(expertName, btnElement, sportKey) {
         }
     };
 
-    window.openPocketModal = () => {
+window.openPocketModal = () => {
         const listArea = document.getElementById('pocketListArea'); listArea.innerHTML = '';
         if (window.userPocket.length === 0) { 
             listArea.innerHTML = '<div style="padding: 100px 20px; text-align: center; color: #94a3b8; font-weight:bold; font-size:20px;">您的預測口袋目前空空如也！<br><small style="font-weight:normal;">快去排行榜點擊「➕ 收錄口袋」吧！</small></div>'; 
         } else {
             const itemNames = {
+                "npb_runline": "日棒讓分", "npb_ml": "日棒獨贏", "npb_total": "日棒大小", "npb_1h_runline": "日棒上半讓分", "npb_1h_ml": "日棒上半獨贏", "npb_1h_total": "日棒上半大小",
                 "nba_team": "NBA 讓分盤", "nba_total": "NBA 大小分",
                 "mlb_ml": "MLB 獨贏", "mlb_runline": "MLB 讓分盤", "mlb_total": "MLB 大小分", "mlb_ml_high": "MLB 高賠獨贏",
                 "nhl_ml": "冰球獨贏(含加時)", "nhl_ml_reg": "冰球獨贏(不含加時)", "nhl_spread_ot": "冰球讓盤(含加時)", "nhl_spread_reg": "冰球讓盤(不含加時)", "nhl_total_ot": "冰球大小(含加時)", "nhl_total_reg": "冰球大小(不含加時)", "khl_team": "俄冰隊伍", "khl_total": "俄冰大小分",
@@ -92,8 +93,23 @@ window.toggleUserPocket = function(expertName, btnElement, sportKey) {
                 "lol_team": "電競隊伍", "lol_total": "電競大小"
             };
 
+            // 🎯 移植專屬排版引擎：將單行文字自動轉換為「垂直清單」
+            const formatVertical = (text) => {
+                if (!text) return '';
+                if (text.includes('\n')) return text.replace(/\n/g, '<br>');
+                if (text.includes('：') || text.includes(':')) {
+                    let parts = text.split(/：|:/);
+                    let title = parts[0].trim();
+                    let itemsStr = parts.slice(1).join(':').trim();
+                    let items = itemsStr.split(/、|，|,/);
+                    let html = `<div style="color:#1e293b; font-weight:900; margin-bottom:5px;">${title}</div>`; // 口袋名單底色是白的，標題改用深色
+                    html += items.map(item => `<div style="padding-left: 8px; line-height: 1.5;">${item.trim()}</div>`).join('');
+                    return html;
+                }
+                return text;
+            };
+
             window.userPocket.forEach((pocketKey, index) => {
-                // 🎯 【關鍵升級 4】將「聯合鑰匙」解鎖，拆出「名字」跟「當時的賽事標籤」
                 let name = pocketKey;
                 let savedSportKey = "";
                 if (pocketKey.includes("||")) {
@@ -102,33 +118,39 @@ window.toggleUserPocket = function(expertName, btnElement, sportKey) {
                     savedSportKey = parts[1];
                 }
 
-                let rawText = "";
+                let finalContent = "";
+                
+                // 🎯 同步 Tooltip 邏輯：精準抓取第 3 欄位資料
                 if (typeof todayPicks !== 'undefined') {
                     if (Array.isArray(todayPicks)) {
-                        const found = todayPicks.find(p => p[0] === name);
-                        if (found) rawText = found[1] || "";
+                        const foundAll = todayPicks.filter(p => p[0] === name);
+                        if (foundAll.length > 0) {
+                            if (foundAll[0].length >= 3) {
+                                // 新版 3 欄位格式
+                                const exactMatch = foundAll.find(p => p[1] === savedSportKey);
+                                if (exactMatch) finalContent = formatVertical(exactMatch[2]);
+                            } else {
+                                // 相容舊版 2 欄位格式
+                                let rawText = foundAll[0][1] || "";
+                                finalContent = typeof window.filterPickText === 'function' ? window.filterPickText(rawText, savedSportKey) : rawText;
+                            }
+                        }
                     } else {
-                        rawText = todayPicks[name] || "";
+                        // 最舊的 Object 格式相容
+                        let rawText = todayPicks[name] || "";
+                        finalContent = typeof window.filterPickText === 'function' ? window.filterPickText(rawText, savedSportKey) : rawText;
                     }
                 }
-                
-                // 🎯 【關鍵升級 5】不管外面畫面怎麼切，永遠強制用「存檔時的賽事濾鏡」切西瓜
-                let filteredText = "";
-                if (typeof window.filterPickText === 'function') {
-                    filteredText = window.filterPickText(rawText, savedSportKey);
-                } else {
-                    filteredText = rawText ? rawText.replace(/\n/g, '<br>') : '';
-                }
 
-                let pickText = filteredText ? filteredText : '<span style="color:#94a3b8; font-weight:normal;">今日該好手尚未發布任何推薦</span>';
-                
-                // 💡 加上視覺小標籤，例如「傲慢20 [NBA 讓分盤]」
+                let pickText = finalContent ? finalContent : '<span style="color:#94a3b8; font-weight:normal;">今日該好手尚未發布任何推薦</span>';
                 let tagHtml = savedSportKey ? `<span class="pocket-sport-tag">${itemNames[savedSportKey] || '通用'}</span>` : '';
 
                 listArea.innerHTML += `
                 <li class="pocket-item" style="animation-delay: ${index * 0.1}s;">
                     <div class="pocket-item-name">
-                        <div>${name} ${tagHtml}</div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            ${name} ${tagHtml}
+                        </div>
                         <span class="pocket-remove-btn" onclick="window.removePocketItem('${pocketKey}')">移除</span>
                     </div>
                     <div class="pocket-item-text">${pickText}</div>

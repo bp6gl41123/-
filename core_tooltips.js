@@ -60,29 +60,67 @@ window.filterPickText = function(rawText, sportKey) {
 window.getPickTooltipHtml = function(name) {
     if (typeof todayPicks === 'undefined') return '';
     
-    let rawText = "";
+    let sportKey = window.activeSportKey || "";
+
+    // 🎯 核心防護：如果是在首頁總榜（尚未選擇任何賽事），直接不顯示對話框圖示
+    if (sportKey === "") return '';
+
+    let finalContent = "";
+
+    // 🎯 建立專屬排版引擎：將單行文字自動轉換為「垂直清單」
+    const formatVertical = (text) => {
+        if (!text) return '';
+        if (text.includes('\n')) return text.replace(/\n/g, '<br>');
+        
+        if (text.includes('：') || text.includes(':')) {
+            let parts = text.split(/：|:/);
+            let title = parts[0].trim();
+            let itemsStr = parts.slice(1).join(':').trim();
+            let items = itemsStr.split(/、|，|,/);
+            
+            let html = `<div style="color:#fbbf24; font-weight:900; margin-bottom:5px;">${title}</div>`;
+            html += items.map(item => `<div style="padding-left: 8px; line-height: 1.5;">${item.trim()}</div>`).join('');
+            return html;
+        }
+        return text;
+    };
+
     if (Array.isArray(todayPicks)) {
-        const found = todayPicks.find(p => p[0] === name);
-        if (found) rawText = found[1] || "";
+        // 1. 找出該專家「所有」的推薦陣列
+        const foundAll = todayPicks.filter(p => p[0] === name);
+        if (foundAll.length > 0) {
+            // 2. 自動判斷是否為新版 3 欄位結構
+            if (foundAll[0].length >= 3) {
+                if (sportKey !== "") {
+                    // 精準配對當下切換的賽事，並套用「垂直排版引擎」
+                    const exactMatch = foundAll.find(p => p[1] === sportKey);
+                    if (exactMatch) finalContent = formatVertical(exactMatch[2]);
+                } else {
+                    // 若為總榜模式，串接所有推薦內容，並套用「垂直排版引擎」
+                    finalContent = foundAll.map(p => formatVertical(p[2])).join('<hr style="border-top:1px dashed #fbbf24; margin: 12px 0; opacity: 0.5;">');
+                }
+            } else {
+                // 相容舊版 2 欄位結構
+                let rawText = foundAll[0][1] || "";
+                finalContent = window.filterPickText(rawText, sportKey);
+            }
+        }
     } else {
-        rawText = todayPicks[name] || "";
+        // 最舊的 Object 格式相容
+        let rawText = todayPicks[name] || "";
+        finalContent = window.filterPickText(rawText, sportKey);
     }
     
-    if (!rawText) return '';
-
-    let sportKey = window.activeSportKey || "";
-    let finalContent = window.filterPickText(rawText, sportKey);
-
+    // 如果過濾後沒有內容，就不顯示泡泡框
     if (!finalContent || !finalContent.trim()) return '';
     
-    // 🎯 【關鍵升級 1】建立專屬的「聯合鑰匙」 (名字 + 賽事)，精準比對是否收錄
+    // 3. 專屬收錄口袋邏輯
     let pocketKey = sportKey ? `${name}||${sportKey}` : name;
     let isSaved = window.userPocket.includes(pocketKey);
     
     let btnText = isSaved ? '⭐ 已收錄' : '➕ 收錄口袋';
     let btnClass = isSaved ? 'pocket-add-btn saved' : 'pocket-add-btn';
     
-    // 🎯 【關鍵升級 2】將 sportKey 傳送給收錄按鈕，讓它記住當下是在哪個賽事
     return `<div class="pick-tooltip-container"><span class="pick-icon" onclick="event.stopPropagation(); window.toggleMobileTooltip(this);" title="點擊查看今日推薦">💬</span><div class="pick-tooltip"><div class="pick-content">${finalContent}</div><div class="pocket-btn-wrapper"><button class="${btnClass}" onclick="event.stopPropagation(); window.toggleUserPocket('${name}', this, '${sportKey}')">${btnText}</button></div></div></div>`;
 };
 
