@@ -70,10 +70,13 @@ if (!document.getElementById('pickTooltipStyle')) {
         .podium-card:nth-child(2) { --rx: -1200px; --ry: 0px;     --rr: -360deg; }
         .podium-card:nth-child(3) { --rx: 1200px;  --ry: 0px;     --rr: 720deg; }
 
-        .pocket-btn-wrapper { margin-top: 10px; border-top: 1px dashed #475569; padding-top: 8px; text-align: right; }
-        .pocket-add-btn { background: #3b82f6; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .pocket-add-btn:hover { background: #2563eb; }
-        .pocket-add-btn.saved { background: #10b981; color: white; }
+/* 👈 text-align: left 讓按鈕靠左 */
+        .pocket-btn-wrapper { margin-top: 10px; border-top: 1px dashed #475569; padding-top: 8px; text-align: left; }
+        /* 👈 顏色同步為寶庫專屬的橘色漸層，增加立體陰影 */
+        .pocket-add-btn { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        .pocket-add-btn:hover { background: linear-gradient(135deg, #fbbf24, #f59e0b); transform: translateY(-1px); }
+        /* 👈 已收錄狀態改為深沉的翡翠綠漸層，代表成功存入 */
+        .pocket-add-btn.saved { background: linear-gradient(135deg, #10b981, #059669); color: white; }
 
         /* 🛑 休眠卡片樣式 */
         .sleep-card { background-color: #f8fafc; border-color: #cbd5e1; }
@@ -196,11 +199,11 @@ window.toggleUserPocket = function(expertName, btnElement, sportKey) {
     if (idx > -1) { 
         window.userPocket.splice(idx, 1); 
         btnElement.className = 'pocket-add-btn'; 
-        btnElement.innerHTML = '➕ 收錄口袋'; 
+        btnElement.innerHTML = '➕ 收錄寶庫'; 
     } else { 
         window.userPocket.push(pocketKey); 
         btnElement.className = 'pocket-add-btn saved'; 
-        btnElement.innerHTML = '⭐ 已收錄'; 
+        btnElement.innerHTML = '⭐ 已存寶庫'; 
     }
     localStorage.setItem('UserPocketDB', JSON.stringify(window.userPocket));
     if (typeof window.updatePocketWidget === 'function') window.updatePocketWidget(); 

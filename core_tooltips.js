@@ -114,11 +114,11 @@ window.getPickTooltipHtml = function(name) {
     // 如果過濾後沒有內容，就不顯示泡泡框
     if (!finalContent || !finalContent.trim()) return '';
     
-    // 3. 專屬收錄口袋邏輯
+// 3. 專屬收錄口袋邏輯
     let pocketKey = sportKey ? `${name}||${sportKey}` : name;
     let isSaved = window.userPocket.includes(pocketKey);
     
-    let btnText = isSaved ? '⭐ 已收錄' : '➕ 收錄口袋';
+    let btnText = isSaved ? '⭐ 已存寶庫' : '➕ 收錄寶庫';
     let btnClass = isSaved ? 'pocket-add-btn saved' : 'pocket-add-btn';
     
     return `<div class="pick-tooltip-container"><span class="pick-icon" onclick="event.stopPropagation(); window.toggleMobileTooltip(this);" title="點擊查看今日推薦">💬</span><div class="pick-tooltip"><div class="pick-content">${finalContent}</div><div class="pocket-btn-wrapper"><button class="${btnClass}" onclick="event.stopPropagation(); window.toggleUserPocket('${name}', this, '${sportKey}')">${btnText}</button></div></div></div>`;

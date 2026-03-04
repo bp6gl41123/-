@@ -1,8 +1,8 @@
 // 🗝️ 雙軌金鑰配置 (2026 隱藏鎖版)
 const config = {
-    // 💡 1212G 的編碼是 MTIxMkc=，8888 的編碼是 ODg4OA==
-    adminCode: "MTIxMkc=",  // 管理員 (輸入 1212G)
-    memberCode: "ODg4OA=="   // 成員 (輸入 8888)
+    // 💡  的編碼是 MTIxMkc=， 的編碼是 ODg4OA==
+    adminCode: "MTIxMkc=",  // 管理員 (輸入 )
+    memberCode: "ODg4OA=="   // 成員 (輸入 )
 };
 // 為了相容舊邏輯，保留此變數 (自動抓取管理員金鑰)
 const SYSTEM_DAILY_KEY = atob(config.adminCode);
@@ -154,11 +154,16 @@ const todayPicks = [
     // --- 金門小翁40 ---
     ["金門小翁40", "nba_team", "🏀 NBA 讓分盤：尼克 +4、賽爾 -6.5、快艇 -12.5"],
 
+    ["傲慢20", "mlb_ml", "⚾ MLB 獨贏：洋基PK、釀酒PK、巨人PK、金鶯PK"],
+    ["小魚兒33", "nba_team", "🏀 NBA 讓分盤：尼克+4.5、賽爾-6.5"],
+    ["小魚兒33", "nba_total", "🏀 NBA 大小分：爵士場 237.5大、拓荒場 235.5小、快艇場 227.5小"],
+
     // --- 林Cu 53 新增 ---
     ["林Cu 53", "mlb_ml", "⚾ MLB 獨贏：金鶯Pk、紅襪pk"],
     ["林Cu 53", "mlb_runline", "⚾ MLB 讓分盤：小熊+1.5"],
     ["林Cu 53", "nba_total", "🏀 NBA 大小分：黃蜂 215.5小分"],
     ["林Cu 53", "nba_team", "🏀 NBA 讓分盤：老鷹+0.5、溜馬+12.5、爵士+8.5"]
+
 ];
 // ==============================================================
 // 📅 【每日賽程 派發區】 

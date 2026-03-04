@@ -12,11 +12,11 @@ window.toggleUserPocket = function(expertName, btnElement, sportKey) {
     if (idx > -1) { 
         window.userPocket.splice(idx, 1); 
         btnElement.className = 'pocket-add-btn'; 
-        btnElement.innerHTML = '➕ 收錄口袋'; 
+        btnElement.innerHTML = '➕ 收錄寶庫'; 
     } else { 
         window.userPocket.push(pocketKey); 
         btnElement.className = 'pocket-add-btn saved'; 
-        btnElement.innerHTML = '⭐ 已收錄'; 
+        btnElement.innerHTML = '⭐ 已存寶庫'; 
     }
     localStorage.setItem('UserPocketDB', JSON.stringify(window.userPocket));
     
@@ -27,7 +27,8 @@ window.toggleUserPocket = function(expertName, btnElement, sportKey) {
     if (!document.getElementById('pocketWidgetStyle')) {
         const style = document.createElement('style'); style.id = 'pocketWidgetStyle';
         style.innerHTML = `
-            .floating-pocket-btn { position: fixed; top: 50%; right: -8px; transform: translateY(-50%); z-index: 9995; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 22px 16px 22px 28px; border-radius: 45px 0 0 45px; font-weight: 900; cursor: pointer; box-shadow: -8px 8px 30px rgba(0,0,0,0.5); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center; gap: 8px; border: 2px solid rgba(255,255,255,0.2); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.floating-pocket-btn { position: fixed; top: calc(50% - 65px); right: -8px; transform: translateY(-50%); z-index: 9995; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 22px 16px 22px 28px; border-radius: 45px 0 0 45px; font-weight: 900; cursor: pointer; box-shadow: -8px 8px 30px rgba(0,0,0,0.5); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center; gap: 8px; border: 2px solid rgba(255,255,255,0.2); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+
             .floating-pocket-btn:hover { right: 0; background: linear-gradient(135deg, #fbbf24, #f59e0b); padding-right: 22px; transform: translateY(-50%) scale(1.05); }
             .pocket-badge { background: #dc2626; color: white; border-radius: 50%; padding: 3px 10px; font-size: 14px; font-weight: 900; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.4); position: relative; top: -5px; }
             .pocket-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.88); backdrop-filter: blur(15px); z-index: 10001; display: none; justify-content: center; align-items: center; opacity: 0; transition: 0.4s ease; }
@@ -69,10 +70,10 @@ window.toggleUserPocket = function(expertName, btnElement, sportKey) {
     `;
     document.body.appendChild(overlay);
 
-    window.updatePocketWidget = () => {
+window.updatePocketWidget = () => {
         if (window.userPocket.length > 0) { 
             floatBtn.style.display = 'flex'; 
-            floatBtn.innerHTML = `<span>📥</span><span style="font-size:14px;margin-top:5px;">預測</span><span style="font-size:14px;">收錄</span><span class="pocket-badge">${window.userPocket.length}</span>`; 
+            floatBtn.innerHTML = `<span>🎁</span><span style="font-size:14px;margin-top:5px;">我的</span><span style="font-size:14px;">寶庫</span><span class="pocket-badge">${window.userPocket.length}</span>`; 
         } else { 
             floatBtn.style.display = 'none'; 
         }
@@ -81,7 +82,7 @@ window.toggleUserPocket = function(expertName, btnElement, sportKey) {
 window.openPocketModal = () => {
         const listArea = document.getElementById('pocketListArea'); listArea.innerHTML = '';
         if (window.userPocket.length === 0) { 
-            listArea.innerHTML = '<div style="padding: 100px 20px; text-align: center; color: #94a3b8; font-weight:bold; font-size:20px;">您的預測口袋目前空空如也！<br><small style="font-weight:normal;">快去排行榜點擊「➕ 收錄口袋」吧！</small></div>'; 
+            listArea.innerHTML = '<div style="padding: 100px 20px; text-align: center; color: #94a3b8; font-weight:bold; font-size:20px;">您的專屬寶庫目前空空如也！<br><small style="font-weight:normal;">快去排行榜點擊「➕ 收錄寶庫」吧！</small></div>'; 
         } else {
             const itemNames = {
                 "npb_runline": "日棒讓分", "npb_ml": "日棒獨贏", "npb_total": "日棒大小", "npb_1h_runline": "日棒上半讓分", "npb_1h_ml": "日棒上半獨贏", "npb_1h_total": "日棒上半大小",
