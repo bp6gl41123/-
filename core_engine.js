@@ -17,31 +17,31 @@ if (!document.getElementById('pickTooltipStyle')) {
         .pick-icon:hover { animation: none; transform: scale(1.08); background: #fef3c7; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
         @keyframes floatPulse { 0% { transform: translateY(0px); } 50% { transform: translateY(-3px); } 100% { transform: translateY(0px); } }
 
-/* 📱 手機/LINE 版終極防護：徹底解決卡片高低不平的問題 */
+/* 📱 手機/LINE 版終極防護：徹底解決卡片高低不平的問題 (武裝版) */
         @media (max-width: 768px) {
             /* 對策一：空間剝離。將泡泡變成右上角小紅點 */
-            .pick-tooltip-container { position: absolute; top: -10px; right: -8px; margin-left: 0; z-index: 5; }
-            .pick-icon { font-size: 13px; padding: 3px 6px; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+            .pick-tooltip-container { position: absolute !important; top: -5px !important; right: -5px !important; margin-left: 0 !important; z-index: 5 !important; }
+            .pick-icon { font-size: 13px !important; padding: 2px 6px !important; border: 2px solid #fff !important; box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important; }
             
             /* 對策二：高度鎖死。強制卡片統一高度，並將內容垂直均分 */
             .expert-card, body.mode-neg .expert-card { 
-                height: 105px !important; /* 👈 核心：強制鎖死高度 */
+                height: 105px !important; 
                 padding: 10px 2px !important;
                 display: flex !important;
                 flex-direction: column !important;
                 justify-content: space-between !important;
-                box-sizing: border-box;
+                box-sizing: border-box !important;
             }
             
             /* 對策三：彈性名字空間。吸收中間剩餘空間，斷幾行都垂直置中 */
             .expert-card .name { 
-                flex-grow: 1; 
-                font-size: 14px !important; 
-                line-height: 1.15; 
-                word-break: break-all; /* 長字元強制折行不撐破 */
-                display: flex;
-                align-items: center;
-                justify-content: center;
+                flex-grow: 1 !important; 
+                font-size: 13.5px !important; 
+                line-height: 1.15 !important; 
+                word-break: break-all !important; 
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
             }
         }
 
