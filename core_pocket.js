@@ -27,7 +27,7 @@ window.toggleUserPocket = function(expertName, btnElement, sportKey) {
     if (!document.getElementById('pocketWidgetStyle')) {
         const style = document.createElement('style'); style.id = 'pocketWidgetStyle';
         style.innerHTML = `
-.floating-pocket-btn { position: fixed; top: calc(75% - 70px); right: -8px; transform: translateY(-50%); z-index: 9995; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; width: 70px; box-sizing: border-box; padding: 15px 8px 15px 18px; border-radius: 45px 0 0 45px; font-weight: 900; cursor: pointer; box-shadow: -8px 8px 30px rgba(0,0,0,0.5); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center; gap: 4px; border: 2px solid rgba(255,255,255,0.2); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.floating-pocket-btn { position: fixed; top: calc(75% - 65px); right: -8px; transform: translateY(-50%); z-index: 9995; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; width: 75px; box-sizing: border-box; padding: 12px 10px 12px 18px; border-radius: 45px 0 0 45px; font-weight: 900; cursor: pointer; box-shadow: -8px 8px 30px rgba(0,0,0,0.5); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center; gap: 4px; border: 2px solid rgba(255,255,255,0.2); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 
             .floating-pocket-btn:hover { right: 0; background: linear-gradient(135deg, #fbbf24, #f59e0b); padding-right: 22px; transform: translateY(-50%) scale(1.05); }
             .pocket-badge { background: #dc2626; color: white; border-radius: 50%; padding: 3px 10px; font-size: 14px; font-weight: 900; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.4); position: relative; top: -5px; }
@@ -93,9 +93,9 @@ window.updatePocketWidget = () => {
             floatBtn.style.display = 'flex'; 
 // core_pocket.js 對應的修改參考：
 floatBtn.innerHTML = `
-    <span style="font-size:24px;">🎁</span>
-    <span style="font-size:19px; margin-top:4px; letter-spacing:1.5px; font-weight:900;">我的</span>
-    <span style="font-size:19px; letter-spacing:1.5px; font-weight:900;">寶庫</span>
+    <span style="font-size:20px;">🎁</span>
+    <span style="font-size:16px; margin-top:2px; letter-spacing:1px; font-weight:900;">我的</span>
+    <span style="font-size:16px; letter-spacing:1px; font-weight:900;">寶庫</span>
     <span class="pocket-badge">${window.userPocket.length}</span>
 `;
         } else { 

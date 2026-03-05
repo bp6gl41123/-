@@ -30,15 +30,15 @@ window.toggleRecruit = function(expertName, btnElement, sportKey) {
 /* 🎯 懸浮按鈕優化：調整 Padding 與寬度比例，讓框框貼合大字體，消除空洞感 */
 .floating-recruit-btn { 
                 position: fixed; 
-                top: calc(75% + 70px); 
+                top: calc(75% + 65px); 
                 right: -8px; 
                 transform: translateY(-50%); 
                 z-index: 9995; 
                 background: linear-gradient(135deg, #4f46e5, #312e81); 
                 color: white; 
-                width: 70px; 
+                width: 75px; 
                 box-sizing: border-box; 
-                padding: 15px 8px 15px 18px; 
+                padding: 12px 10px 12px 18px; 
                 border-radius: 45px 0 0 45px; 
                 font-weight: 900; 
                 cursor: pointer; 
@@ -125,12 +125,12 @@ window.updateRecruitWidget = () => {
         if (window.userRecruit.length > 0) { 
             floatBtn.style.display = 'flex'; 
             /* 🎯 字體再次放大：將圖示升級至 24px，文字升級至 19px 極粗體 */
-            floatBtn.innerHTML = `
-                <span style="font-size:24px;">🏯</span>
-                <span style="font-size:19px; margin-top:4px; letter-spacing:1.5px; font-weight:900;">麾下</span>
-                <span style="font-size:19px; letter-spacing:1.5px; font-weight:900;">名單</span>
+floatBtn.innerHTML = `
+                <span style="font-size:20px;">🏯</span>
+                <span style="font-size:16px; margin-top:2px; letter-spacing:1px; font-weight:900;">麾下</span>
+                <span style="font-size:16px; letter-spacing:1px; font-weight:900;">名單</span>
                 <span class="recruit-badge">${window.userRecruit.length}</span>
-            `; 
+            `;
         } else { 
             floatBtn.style.display = 'none'; 
         }
