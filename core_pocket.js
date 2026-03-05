@@ -28,8 +28,13 @@ window.toggleUserPocket = function(expertName, btnElement, sportKey) {
         const style = document.createElement('style'); style.id = 'pocketWidgetStyle';
         style.innerHTML = `
 .floating-pocket-btn { position: fixed; top: calc(75% - 65px); right: -8px; transform: translateY(-50%); z-index: 9995; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; width: 75px; box-sizing: border-box; padding: 12px 10px 12px 18px; border-radius: 45px 0 0 45px; font-weight: 900; cursor: pointer; box-shadow: -8px 8px 30px rgba(0,0,0,0.5); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center; gap: 4px; border: 2px solid rgba(255,255,255,0.2); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-
+            /* 🎯 正常狀態的懸浮展開 */
             .floating-pocket-btn:hover { right: 0; background: linear-gradient(135deg, #fbbf24, #f59e0b); padding-right: 22px; transform: translateY(-50%) scale(1.05); }
+            
+            /* 🎯 最新方案：對比模式時縮進右側邊緣 (剩15px的彩色邊框)，滑鼠移入/手指點擊時完整滑出 */
+            .floating-pocket-btn.is-comparing { right: -60px; opacity: 0.7; }
+            .floating-pocket-btn.is-comparing:hover { right: 0px; opacity: 1; transform: translateY(-50%) scale(1.05); }
+
             .pocket-badge { background: #dc2626; color: white; border-radius: 50%; padding: 3px 10px; font-size: 14px; font-weight: 900; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.4); position: relative; top: -5px; }
             .pocket-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.88); backdrop-filter: blur(15px); z-index: 10001; display: none; justify-content: center; align-items: center; opacity: 0; transition: 0.4s ease; }
             .pocket-modal-overlay.show { display: flex; opacity: 1; }
@@ -209,4 +214,17 @@ window.openPocketModal = () => {
     };
 
     window.updatePocketWidget();
+
+    // 🎯 方案 B 全域開關：讓主程式可以呼叫此函數來切換按鈕位置
+    window.setFloatingButtonsCompareMode = function(isComparing) {
+        const pocketBtn = document.querySelector('.floating-pocket-btn');
+        const recruitBtn = document.querySelector('.floating-recruit-btn');
+        if (isComparing) {
+            if (pocketBtn) pocketBtn.classList.add('is-comparing');
+            if (recruitBtn) recruitBtn.classList.add('is-comparing');
+        } else {
+            if (pocketBtn) pocketBtn.classList.remove('is-comparing');
+            if (recruitBtn) recruitBtn.classList.remove('is-comparing');
+        }
+    };
 })();

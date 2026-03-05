@@ -22,6 +22,32 @@ window.handleCompare = function() {
     document.getElementById('details').scrollIntoView({ behavior: 'smooth' }); 
 };
 
+// 🎯 [核心新增] 智慧滾動偵測：自動判斷按鈕是否該往左滑動避開邊緣
+window.addEventListener('scroll', function() {
+    const detailsDiv = document.getElementById('details');
+    
+    // 若對比區塊不存在或尚未顯示，確保按鈕退回右側邊緣
+    if (!detailsDiv || detailsDiv.style.display === 'none') {
+        if (typeof window.setFloatingButtonsCompareMode === 'function') window.setFloatingButtonsCompareMode(false);
+        return;
+    }
+    
+    // 取得對比區塊距離螢幕頂部的相對位置
+    const rect = detailsDiv.getBoundingClientRect();
+    
+    // 判斷邏輯：當畫面往下滑，對比區塊進入螢幕可視範圍 (到達螢幕高度的 70% 處) 時，按鈕往左滑動
+    if (rect.top < window.innerHeight * 0.7) {
+        if (typeof window.setFloatingButtonsCompareMode === 'function') {
+            window.setFloatingButtonsCompareMode(true);
+        }
+    } else {
+        // 當畫面往上滑回上方主畫面時，按鈕退回最右側，繼續維持原本完美的重疊層次感
+        if (typeof window.setFloatingButtonsCompareMode === 'function') {
+            window.setFloatingButtonsCompareMode(false);
+        }
+    }
+});
+
 window.renderDisplay = function() {
     const display = document.getElementById('displayArea'); const header = document.getElementById('singleHeader');
     const layouts = display.querySelectorAll('.pk-layout'); const scrollMap = {}; layouts.forEach(l => { if(l.id) scrollMap[l.id] = l.scrollLeft; });

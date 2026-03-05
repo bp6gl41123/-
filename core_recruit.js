@@ -52,7 +52,14 @@ window.toggleRecruit = function(expertName, btnElement, sportKey) {
                 text-shadow: 0 2px 4px rgba(0,0,0,0.3); 
             }
 
+.floating-recruit-btn { position: fixed; top: calc(75% + 65px); right: -8px; transform: translateY(-50%); z-index: 9995; background: linear-gradient(135deg, #4f46e5, #312e81); color: white; width: 75px; box-sizing: border-box; padding: 12px 10px 12px 18px; border-radius: 45px 0 0 45px; font-weight: 900; cursor: pointer; box-shadow: -8px 8px 30px rgba(0,0,0,0.5); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center; gap: 4px; border: 2px solid rgba(255,255,255,0.2); text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+            /* 🎯 正常狀態的懸浮展開 */
             .floating-recruit-btn:hover { right: 0; background: linear-gradient(135deg, #6366f1, #3730a3); padding-right: 22px; transform: translateY(-50%) scale(1.05); }
+            
+            /* 🎯 最新方案：對比模式時縮進右側邊緣 (剩15px的彩色邊框)，滑鼠移入/手指點擊時完整滑出 */
+            .floating-recruit-btn.is-comparing { right: -60px; opacity: 0.7; }
+            .floating-recruit-btn.is-comparing:hover { right: 0px; opacity: 1; transform: translateY(-50%) scale(1.05); }
+
             .recruit-badge { background: #10b981; color: white; border-radius: 50%; padding: 3px 10px; font-size: 14px; font-weight: 900; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.4); position: relative; top: -5px; }
             
             /* 彈出視窗 UI */
