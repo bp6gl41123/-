@@ -30,13 +30,13 @@ window.toggleRecruit = function(expertName, btnElement, sportKey) {
 /* 🎯 懸浮按鈕優化：調整 Padding 與寬度比例，讓框框貼合大字體，消除空洞感 */
 .floating-recruit-btn { 
                 position: fixed; 
-                top: calc(65% + 65px); 
+                top: calc(75% + 95px); 
                 right: -8px; 
                 transform: translateY(-50%); 
                 z-index: 9995; 
                 background: linear-gradient(135deg, #4f46e5, #312e81); 
                 color: white; 
-                padding: 18px 12px 18px 24px; 
+                padding: 20px 14px 20px 26px; 
                 border-radius: 45px 0 0 45px; 
                 font-weight: 900; 
                 cursor: pointer; 
