@@ -218,7 +218,8 @@ body.mode-neg .expert-card {
 
 window.userPocket = JSON.parse(localStorage.getItem('UserPocketDB')) || [];
 window.activeSportKey = "";  
-window.currentHomeFilter = 'all';
+/* 🎯 變更預設首頁過濾器：從 'all' (賽季總榜) 改為 7 (近7場)，提升即時戰力參考價值 */
+window.currentHomeFilter = 7;
 
 // 🎯 【修復內鬼】這裡已經同步更新為有 sportKey 的新版邏輯！不會再覆蓋丟失賽事標籤了。
 window.toggleUserPocket = function(expertName, btnElement, sportKey) {

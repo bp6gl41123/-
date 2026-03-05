@@ -8,6 +8,87 @@
     <title>齊聚眾選 - 戰績實時反饋儀表板 (每日密鑰版)</title>
     
     <style>
+/* ==================================================== */
+        /* 🌟 主視覺中央招牌 (尊爵星空競技場全新設計版)         */
+        /* ==================================================== */
+        .main-header-signboard {
+            position: relative; 
+            max-width: 850px; 
+            margin: 40px auto 35px auto; /* 🎯 修正 1：上方加入 40px 的留白，不再貼齊頂部 */
+            
+            /* 🎯 修正 2：捨棄原本的灰色，改用深邃星空藍漸層，質感大爆發 */
+            background: linear-gradient(145deg, #0f172a, #1e293b, #020617); 
+            
+            border: 1px solid rgba(251, 191, 36, 0.4); 
+            border-radius: 50px; 
+            padding: 15px 40px;
+            
+            display: flex;
+            flex-wrap: wrap; 
+            align-items: baseline; /* 維持您要求的底部基線對齊 */
+            justify-content: center;
+            gap: 15px; 
+            
+            /* 精緻的金屬內發光與深層懸浮陰影 */
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.15), 
+                inset 0 2px 0 rgba(255,255,255,0.05),
+                inset 0 -2px 0 rgba(0,0,0,0.5);
+                
+            animation: premium-pulse 3.5s infinite alternate;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: default;
+        }
+
+        /* 更沉穩的高級呼吸燈 */
+        @keyframes premium-pulse {
+            0% { box-shadow: 0 15px 35px rgba(0,0,0,0.15), 0 0 15px rgba(251, 191, 36, 0.1); border-color: rgba(251, 191, 36, 0.3); }
+            100% { box-shadow: 0 15px 35px rgba(0,0,0,0.25), 0 0 30px rgba(251, 191, 36, 0.4); border-color: rgba(251, 191, 36, 0.8); }
+        }
+
+        /* 互動懸浮放大 */
+        .main-header-signboard:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 40px rgba(251, 191, 36, 0.6);
+            border-color: #fbbf24;
+        }
+
+        .main-header-signboard .signboard-title {
+            font-size: 32px; 
+            font-weight: 900;
+            letter-spacing: 3px; 
+            margin: 0;
+            display: flex;
+            align-items: baseline;
+        }
+
+        /* 讓金字帶有立體漸層質感 */
+        .main-header-signboard .title-gold { 
+            background: linear-gradient(to bottom, #fde047, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.6)); /* 讓文字在深色底上更浮凸 */
+        }
+
+        /* 🎯 備註字體：保留無邊框與基線對齊，改用科技冰藍色，跳脫灰色的沉悶 */
+        .main-header-signboard .version-badge {
+            font-size: 15px;  
+            color: #7dd3fc; 
+            font-weight: bold;
+            letter-spacing: 2px;
+            opacity: 0.9;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            
+            /* 確保沒有多餘邊框或底色 */
+            background: transparent; border: none; box-shadow: none; padding: 0; position: static;
+        }
+
+        @media (max-width: 768px) {
+            .main-header-signboard { margin-top: 25px; padding: 12px 20px; border-radius: 30px; }
+            .main-header-signboard .signboard-title { font-size: 22px; flex-wrap: wrap; justify-content: center; }
+            .main-header-signboard .version-badge { font-size: 12px; }
+        }
+
         /* ==================================================== */
         /* 1. 密鑰解鎖畫面的專屬樣式 (新增 - 半透明效果)      */
         /* ==================================================== */
@@ -224,18 +305,18 @@
         </div>
     </div>
 
-    <div id="mainContent">
-        <div class="container">
-
-
+<div class="main-header-signboard">
+                <div class="signboard-title">
+                    <span class="title-gold">齊聚眾選 一起來預測吧 !</span>
+                </div>
+                <span class="version-badge">多人預測對比系統</span>
+            </div>
             
-            <h2 style="color: #1877f2; text-align: center; margin-bottom: 30px;">齊聚眾選 - 戰績實時反饋儀表板 (模組化定案版)</h2>
-            
-            <div class="ranking-filter-bar">
-                <button class="r-btn active" onclick="changeHomeRanking('all', this)">賽季總榜</button>
+<div class="ranking-filter-bar">
+                <button class="r-btn" onclick="changeHomeRanking('all', this)">賽季總榜</button>
                 <button class="r-btn" onclick="changeHomeRanking(30, this)">近 30 場</button>
                 <button class="r-btn" onclick="changeHomeRanking(20, this)">近 20 場</button>
-                <button class="r-btn" onclick="changeHomeRanking(7, this)">近 7 場</button>
+                <button class="r-btn active" onclick="changeHomeRanking(7, this)">近 7 場</button>
                 <button class="r-btn" onclick="changeHomeRanking(3, this)">近 3 場 (爆發)</button>
             </div>
 
@@ -283,9 +364,9 @@
     <script src="core_utils.js?v=1.0.2"></script>
     <script src="core_tooltips.js?v=1.0.3"></script>
     <script src="core_trend.js?v=1.0.2"></script>
-    <script src="core_ranking.js?v=1.0.4"></script>
+    <script src="core_ranking.js?v=1.0.5"></script>
     <script src="core_recruit.js?v=1.0.6"></script>
-    <script src="core_engine.js?v=1.0.9"></script>
+    <script src="core_engine.js?v=1.0.11"></script>
 
 </body>
 </html>

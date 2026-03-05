@@ -58,10 +58,13 @@ window.renderRankMode = function() {
     }
     allSorted.sort((a,b) => b.rate - a.rate || b.net - a.net);
     const isActuallyPositive = (item) => { const naturallyPositive = item.rate >= 0.5; const isSwapped = window.manualSwapList.includes(item.name); return isSwapped ? !naturallyPositive : naturallyPositive; };
-    const top6 = allSorted.filter(item => isActuallyPositive(item)); 
+
+const top6 = allSorted.filter(item => isActuallyPositive(item)); 
     const bottom6 = allSorted.filter(item => !isActuallyPositive(item)).sort((a,b) => a.rate - b.rate || a.net - b.net);
-    display.innerHTML = `<div class="rank-group-title" style="color:#16a34a; border-bottom:2px solid #bbf7d0;">🏆 ${itemNames[window.activeSportKey]} - 戰力紅榜</div><div class="pk-layout" id="topLayout"></div><div class="rank-group-title" style="color:#dc3545; border-bottom:2px solid #fecaca;">💀 ${itemNames[window.activeSportKey]} - 戰力黑榜</div><div class="pk-layout" id="bottomLayout"></div>`;
+    /* 🎯 專業化名詞與圖示升級：戰力紅/黑榜 ➔ 正向/反向指標，骷髏頭 ➔ 魔法杖 */
+    display.innerHTML = `<div class="rank-group-title" style="color:#16a34a; border-bottom:2px solid #bbf7d0;">🏆 ${itemNames[window.activeSportKey]} - 正向指標</div><div class="pk-layout" id="topLayout"></div><div class="rank-group-title" style="color:#dc3545; border-bottom:2px solid #fecaca;">🪄 ${itemNames[window.activeSportKey]} - 反向指標</div><div class="pk-layout" id="bottomLayout"></div>`;
     top6.forEach((item, i) => document.getElementById('topLayout').innerHTML += window.renderRankCard(item, i, window.activeSportKey, false));
+
     bottom6.forEach((item, i) => document.getElementById('bottomLayout').innerHTML += window.renderRankCard(item, i, window.activeSportKey, true));
 };
 
