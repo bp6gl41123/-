@@ -57,14 +57,14 @@ window.toggleUserPocket = function(expertName, btnElement, sportKey) {
 
 const overlay = document.createElement('div'); overlay.className = 'pocket-modal-overlay';
     overlay.innerHTML = `
-        <div class="pocket-modal-content">
-            <div class="pocket-modal-header">
+        <div class="pocket-modal-content" style="max-height: 90vh; display: flex; flex-direction: column;">
+            
+            <div class="pocket-modal-header" style="flex-shrink: 0;">
                 <h3 style="margin:0;font-size:24px;letter-spacing:1px;">📥 我的今日精選預測名單</h3>
                 <div style="cursor:pointer;font-size:50px;line-height:1;" onclick="closePocketModal()">&times;</div>
             </div>
             
-            
-<div style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; padding: 30px 40px; text-align: left; font-family: sans-serif;">
+            <div style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; padding: 30px 40px; text-align: left; font-family: sans-serif; flex-shrink: 0;">
                 <h4 style="margin: 0 0 15px 0; color: #1e293b; font-size: 24px; font-weight: 900;">💡 系統策略指南</h4>
                 <ul style="margin: 0; padding-left: 28px; color: #475569; font-size: 20px; line-height: 1.8; font-weight: bold;">
                     <li style="margin-bottom: 10px;">任選 1~2 位您認為其成績有參考價值的好手即可。</li>
@@ -79,8 +79,9 @@ const overlay = document.createElement('div'); overlay.className = 'pocket-modal
                 </div>
             </div>
 
-            <ul class="pocket-list" id="pocketListArea"></ul>
-            <div class="pocket-modal-footer">
+            <ul class="pocket-list" id="pocketListArea" style="flex: 1; overflow-y: auto; min-height: 0; max-height: none;"></ul>
+            
+            <div class="pocket-modal-footer" style="flex-shrink: 0;">
                 <button class="pocket-clear-btn" onclick="clearPocket()">🗑️ 清空所有收錄預測單</button>
             </div>
         </div>
