@@ -55,13 +55,29 @@ window.toggleUserPocket = function(expertName, btnElement, sportKey) {
     floatBtn.onclick = () => window.openPocketModal();
     document.body.appendChild(floatBtn);
 
-    const overlay = document.createElement('div'); overlay.className = 'pocket-modal-overlay';
+const overlay = document.createElement('div'); overlay.className = 'pocket-modal-overlay';
     overlay.innerHTML = `
         <div class="pocket-modal-content">
             <div class="pocket-modal-header">
                 <h3 style="margin:0;font-size:24px;letter-spacing:1px;">📥 我的今日精選預測名單</h3>
                 <div style="cursor:pointer;font-size:50px;line-height:1;" onclick="closePocketModal()">&times;</div>
             </div>
+            
+            <div style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; padding: 20px 35px; text-align: left; font-family: sans-serif;">
+                <h4 style="margin: 0 0 10px 0; color: #1e293b; font-size: 16px; font-weight: 900;">💡 系統策略指南</h4>
+                <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 14.5px; line-height: 1.6; font-weight: bold;">
+                    <li>任選 1~2 位您認為其成績有參考價值的好手即可。</li>
+                    <li><span style="color: #1877f2;">鎖定單一選手，請「照單全跟」：</span>若您任意挑選牌支，成績就不會反映在您的真實損益上。<br>
+                    <span style="font-size: 13px; color: #64748b; font-weight: normal;">(譬如：好手們常均三過二，就是他的三場全下，才有三過二的獲利)</span></li>
+                </ul>
+
+                <div style="background: #fff5f5; border: 2px solid #fecaca; border-left: 8px solid #ef4444; padding: 12px 15px; border-radius: 6px; margin-top: 15px; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.1);">
+                    <strong style="color: #dc2626; font-size: 17px; display: block; margin-bottom: 6px; letter-spacing: 1px;">🚨 台灣運彩玩家 專屬策略</strong>
+                    <span style="color: #991b1b; font-weight: 900; font-size: 15px;">反饋最好的玩法：選 1 場 (搭配另外 1 人)，合用 2X1 即可！</span><br>
+                    <span style="color: #dc2626; font-size: 13.5px; font-weight: bold; margin-top: 4px; display: inline-block;">(備註：若該兩位好手，剛好有當日運彩單場，僅玩運彩單場！)</span>
+                </div>
+            </div>
+
             <ul class="pocket-list" id="pocketListArea"></ul>
             <div class="pocket-modal-footer">
                 <button class="pocket-clear-btn" onclick="clearPocket()">🗑️ 清空所有收錄預測單</button>
