@@ -97,7 +97,6 @@ if (!document.getElementById('pickTooltipStyle')) {
             .podium-card:nth-child(2) { --ry: 0px !important;   }
             .podium-card:nth-child(3) { --ry: 0px !important;   }
         }
-        }
 
         .pick-tooltip { 
             visibility: hidden; opacity: 0; position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); 
