@@ -43,6 +43,12 @@ if (!document.getElementById('pickTooltipStyle')) {
                 align-items: center !important;
                 justify-content: center !important;
             }
+
+            /* 🎯 新增對策四：右側安全緩衝區。預留給「邊緣窺探按鈕」，確保卡片文字絕對不被吃掉 */
+            .grid-container {
+                padding-right: 25px !important;
+                box-sizing: border-box !important;
+            }
         }
 
 .pick-tooltip { 
