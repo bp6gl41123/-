@@ -44,16 +44,6 @@ if (!document.getElementById('pickTooltipStyle')) {
                 justify-content: center !important;
             }
 
-            /* 🎯 新增對策四 (對稱留白版)：依據您的巧思，讓整個主容器左右往內縮 32px，產生對等空白，完美解決視覺偏移與泡泡框被切的問題！ */
-            .container {
-                padding-left: 32px !important;
-                padding-right: 32px !important;
-                box-sizing: border-box !important;
-            }
-            
-            .grid-container {
-                padding-right: 0 !important; /* 清除之前的單邊設定，統一交給 container 控管 */
-            }
         }
 
 .pick-tooltip { 
