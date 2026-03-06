@@ -12,45 +12,60 @@ if (!window.dataDB) { window.dataDB = JSON.parse(JSON.stringify(defaultDB)); }
 if (!document.getElementById('pickTooltipStyle')) {
     const style = document.createElement('style'); style.id = 'pickTooltipStyle';
     style.innerHTML = `
-.pick-tooltip-container { position: relative; display: inline-flex; align-items: center; margin-left: 10px; }
-        .pick-icon { font-size: 18px; cursor: pointer; background: #fffbeb; border: 1px solid #fde68a; padding: 4px 12px; border-radius: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); animation: floatPulse 2s infinite ease-in-out; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .pick-icon:hover { animation: none; transform: scale(1.08); background: #fef3c7; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-        @keyframes floatPulse { 0% { transform: translateY(0px); } 50% { transform: translateY(-3px); } 100% { transform: translateY(0px); } }
+        /* 🎯 核心升級一：網格暴力均分化 (強制 8 欄絕對等寬，不受內容長度影響) */
+        .grid-container { grid-template-columns: repeat(8, minmax(0, 1fr)) !important; }
+        .expert-card { position: relative !important; } /* 確保泡泡能精準掛在卡片右上角 */
 
-/* 📱 手機/LINE 版終極防護：徹底解決卡片高低不平的問題 (武裝版) */
+        /* 🎯 核心升級二：泡泡框絕對懸浮化 (脫離空間搶奪，變成右上角小紅點) */
+        .pick-tooltip-container { position: absolute !important; top: -8px !important; right: -8px !important; margin-left: 0 !important; z-index: 5 !important; }
+        .pick-icon { font-size: 12px !important; padding: 2px 6px !important; border: 2px solid #fff !important; box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important; background: #fffbeb; border-radius: 20px; cursor: pointer; transition: 0.2s; }
+        .pick-icon:hover { transform: scale(1.1); background: #fef3c7; }
+
+        /* 🎯 核心升級三：名字優雅省略化 (單行超出自動變...，絕對防禦破版) */
+        .expert-card .name { 
+            white-space: nowrap !important; 
+            overflow: hidden !important; 
+            text-overflow: ellipsis !important; 
+            max-width: 100% !important; 
+            display: block !important; 
+            text-align: center !important;
+            margin-top: 5px; /* 稍微往下推，避開頂樓空間 */
+        }
+
+        /* 📱 手機/LINE 版終極防護：徹底解決卡片高低不平的問題 (武裝版) */
         @media (max-width: 768px) {
-            /* 對策一：空間剝離。將泡泡變成右上角小紅點 */
-            .pick-tooltip-container { position: absolute !important; top: -5px !important; right: -5px !important; margin-left: 0 !important; z-index: 5 !important; }
-            .pick-icon { font-size: 13px !important; padding: 2px 6px !important; border: 2px solid #fff !important; box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important; }
+            /* 手機版泡泡框稍微再縮小一點，更貼合邊緣 */
+            .pick-tooltip-container { top: -6px !important; right: -6px !important; }
+            .pick-icon { font-size: 11px !important; padding: 1px 5px !important; }
             
-            /* 對策二：高度鎖死。強制卡片統一高度，並將內容垂直均分 */
+            /* 對策二：高度鎖死。強制卡片統一高度，並將內容垂直置中 */
             .expert-card, body.mode-neg .expert-card { 
                 height: 105px !important; 
                 padding: 10px 2px !important;
                 display: flex !important;
                 flex-direction: column !important;
-                justify-content: space-between !important;
+                justify-content: center !important; 
+                gap: 6px !important; 
                 box-sizing: border-box !important;
             }
             
-/* 對策三：彈性名字空間。吸收中間剩餘空間，斷幾行都垂直置中 */
+            /* 手機版名字優化：因為空間太窄，改為最多顯示兩行，超過才截斷 */
             .expert-card .name { 
-                flex-grow: 1 !important; 
-                font-size: 13.5px !important; 
-                line-height: 1.15 !important; 
-                word-break: break-all !important; 
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
+                white-space: normal !important; 
+                display: -webkit-box !important;
+                -webkit-line-clamp: 2 !important; 
+                -webkit-box-orient: vertical !important;
+                font-size: 12px !important; 
+                line-height: 1.2 !important; 
+                word-break: break-all !important;
+                margin-top: 0 !important;
             }
 
-            /* 🎯 新增對策四 (版面解壓縮)：適度縮小兩側空白與卡片間距，讓 8 欄卡片在手機上完美置中呼吸，不被硬擠到左邊 */
-            .container { padding: 10px 12px !important; }
+            /* 🎯 新增對策四 (版面解壓縮)：適度縮小兩側空白與卡片間距，讓 8 欄卡片在手機上完美置中呼吸 */
+            .container { padding: 10px 10px !important; }
             .grid-container { gap: 6px !important; }
 
-            /* 🎯 新增對策五 (泡泡框防撞牆：徹底消滅隱形白邊的終極殺招)：
-               讓右側邊緣卡片的泡泡向「左」展開，左側泡泡向「右」展開。
-               這樣隱形的泡泡就不會再超出螢幕，LINE 瀏覽器就不會再產生右側大空白！ */
+            /* 🎯 新增對策五 (泡泡框防撞牆：徹底消滅隱形白邊的終極殺招) */
             .expert-card:nth-child(8n+6) .pick-tooltip,
             .expert-card:nth-child(8n+7) .pick-tooltip,
             .expert-card:nth-child(8n+8) .pick-tooltip { left: auto !important; right: -5px !important; transform: none !important; }
@@ -69,8 +84,7 @@ if (!document.getElementById('pickTooltipStyle')) {
             .podium-card:nth-child(2) .pick-tooltip { left: -5px !important; transform: none !important; }
             .podium-card:nth-child(2) .pick-tooltip::after { left: 15px !important; margin-left: 0 !important; }
 
-            /* 🚀 終極修復：限制手機版飛入動畫的距離！
-               防止卡片從 1200px 外飛入時，瞬間撐開 LINE 瀏覽器產生無法復原的大白邊 */
+            /* 🚀 終極修復：限制手機版飛入動畫的距離！ */
             .expert-card:nth-child(4n+1) { --rx: -100px !important; --ry: -100px !important; }
             .expert-card:nth-child(4n+2) { --rx: 100px !important;  --ry: -100px !important; }
             .expert-card:nth-child(4n+3) { --rx: -100px !important; --ry: 100px !important;  }
@@ -81,19 +95,16 @@ if (!document.getElementById('pickTooltipStyle')) {
             .podium-card:nth-child(3) { --rx: 100px !important;  --ry: 0px !important;    }
         }
 
-.pick-tooltip { 
+        .pick-tooltip { 
             visibility: hidden; opacity: 0; position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); 
             background: linear-gradient(135deg, #1e293b, #0f172a); color: #fbbf24; text-align: left; padding: 14px 18px; 
             border-radius: 12px; border: 1px solid #fbbf24; 
-            /* 稍微加寬，讓閱讀更舒適 */
             min-width: 220px; max-width: 280px; white-space: normal; 
             z-index: 10000; font-size: 14px; font-weight: bold; box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
             transition: 0.3s; pointer-events: auto; line-height: 1.6; letter-spacing: 0.5px; 
-            /* 🎯 核心防護：限制最高高度，超過自動顯示捲軸，並防止滾動穿透 */
             max-height: 220px; overflow-y: auto; overscroll-behavior: contain; 
         }
         
-        /* 🎨 替暗黑泡泡框加上高質感的專屬金色小捲軸 */
         .pick-tooltip::-webkit-scrollbar { width: 6px; }
         .pick-tooltip::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); border-radius: 8px; }
         .pick-tooltip::-webkit-scrollbar-thumb { background: #fbbf24; border-radius: 8px; }
@@ -106,25 +117,16 @@ if (!document.getElementById('pickTooltipStyle')) {
         .pk-column .pick-tooltip::after { top: auto; bottom: 100%; border-color: transparent transparent #fbbf24 transparent; }
         .pk-column .pick-tooltip-container:hover .pick-tooltip, .pk-column .pick-tooltip.show-mobile { bottom: auto; top: 145%; }
 
-/* 🚀 宇宙飛入特效：從四面八方隨機匯聚 */
         @keyframes scatterFlyIn {
-            0% { 
-                opacity: 0; 
-                transform: translate(var(--rx), var(--ry)) rotate(var(--rr)) scale(0.5); 
-            }
-            100% { 
-                opacity: 1; 
-                transform: translate(var(--tx, 0px), var(--ty, 0px)) rotate(var(--rot, 0deg)) scale(1); 
-            }
+            0% { opacity: 0; transform: translate(var(--rx), var(--ry)) rotate(var(--rr)) scale(0.5); }
+            100% { opacity: 1; transform: translate(var(--tx, 0px), var(--ty, 0px)) rotate(var(--rot, 0deg)) scale(1); }
         }
 
         .expert-card, .podium-card { 
-            /* 設定隨機初始位置的變數 (CSS 亂數模擬) */
             --rx: 0px; --ry: 0px; --rr: 0deg;
             animation: scatterFlyIn 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) backwards; 
         }
 
-        /* 為不同順序的卡片設定不同的發射點，達成「四面八方」感 */
         .expert-card:nth-child(4n+1) { --rx: -800px; --ry: -500px; --rr: -120deg; animation-delay: 0.05s; }
         .expert-card:nth-child(4n+2) { --rx: 800px;  --ry: -600px; --rr: 150deg;  animation-delay: 0.1s; }
         .expert-card:nth-child(4n+3) { --rx: -700px; --ry: 700px;  --rr: -90deg;  animation-delay: 0.15s; }
@@ -134,67 +136,42 @@ if (!document.getElementById('pickTooltipStyle')) {
         .podium-card:nth-child(2) { --rx: -1200px; --ry: 0px;     --rr: -360deg; }
         .podium-card:nth-child(3) { --rx: 1200px;  --ry: 0px;     --rr: 720deg; }
 
-/* 👈 text-align: left 讓按鈕靠左 */
         .pocket-btn-wrapper { margin-top: 10px; border-top: 1px dashed #475569; padding-top: 8px; text-align: left; }
-        /* 👈 顏色同步為寶庫專屬的橘色漸層，增加立體陰影 */
         .pocket-add-btn { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
         .pocket-add-btn:hover { background: linear-gradient(135deg, #fbbf24, #f59e0b); transform: translateY(-1px); }
-        /* 👈 已收錄狀態改為深沉的翡翠綠漸層，代表成功存入 */
         .pocket-add-btn.saved { background: linear-gradient(135deg, #10b981, #059669); color: white; }
 
-        /* 🛑 休眠卡片樣式 */
         .sleep-card { background-color: #f8fafc; border-color: #cbd5e1; }
         .sleep-card .name { color: #94a3b8; }
         .sleep-card .badge { background-color: #e2e8f0; color: #94a3b8; }
         .sleep-card .sleep-text { color: #cbd5e1; }
 
-
-/* 🪄 專屬反向模式：從白轉黑的翻轉動畫 */
-@keyframes flipFromWhite {
-            0% {
-                opacity: 1; /* 翻轉開始時顯現 */
-                /* 翻轉 180 度，且位置也要考慮進去 */
-                transform: translate(var(--tx, 0px), var(--ty, 0px)) rotateY(180deg) rotate(var(--rot, 0deg));
-                background-color: #ffffff;
-                color: transparent;
-                border-color: #e2e8f0;
-            }
-100% {
-                opacity: 1; /* 強制結束時可見 */
-                /* 翻轉回 0 度，並保持深 U 曲線的位置 */
-                transform: translate(var(--tx, 0px), var(--ty, 0px)) rotateY(0deg) rotate(var(--rot, 0deg));
-                background-color: #1e293b;
-                color: #fca5a5;
-                border-color: #450a0a;
-            }
+        @keyframes flipFromWhite {
+            0% { opacity: 1; transform: translate(var(--tx, 0px), var(--ty, 0px)) rotateY(180deg) rotate(var(--rot, 0deg)); background-color: #ffffff; color: transparent; border-color: #e2e8f0; }
+            100% { opacity: 1; transform: translate(var(--tx, 0px), var(--ty, 0px)) rotateY(0deg) rotate(var(--rot, 0deg)); background-color: #1e293b; color: #fca5a5; border-color: #450a0a; }
         }
 
-        /* 🪄 暗黑/反向魔法模式 */
         body.mode-neg { background-color: #0f172a; color: #f8fafc; transition: background-color 0.5s; }
 
-/* 🪄 魔法模式：卡片改為「白轉黑」翻轉，且取消原本的飛入 */
-body.mode-neg .expert-card {
+        body.mode-neg .expert-card {
             animation: flipFromWhite 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards !important; 
             transform-style: preserve-3d; perspective: 1000px; backface-visibility: hidden; 
             opacity: 0; background: #1e293b; z-index: 1;
         }
-        /* 💡 移除 podium-card 的強制單一動畫，交給 index.html 統一控光 */
 
         body.mode-neg .podium-card { background: linear-gradient(135deg, #7f1d1d, #450a0a); border-color: #ef4444; }
 
         .mode-neg .rank-net { color: #f87171 !important; }
 
-        /* 魔法模式下的休眠卡片 (深淵灰) */
         body.mode-neg .sleep-card { background-color: #020617 !important; border-color: #1e293b !important; opacity: 0.7; }
         body.mode-neg .sleep-card .name { color: #475569 !important; }
         body.mode-neg .sleep-card .badge { background-color: #1e293b !important; color: #475569 !important; }
         body.mode-neg .sleep-card .sleep-text { color: #334155 !important; }
 
-/* 🥋 寬鬆魔法腰帶版：卡片大小恢復 100%，增加橫向間距 */
         body.mode-neg #expertGrid { 
             display: grid !important;
-            grid-template-columns: repeat(8, 1fr) !important; /* 核心：恢復 8 欄，卡片立即變大 */
-            gap: 75px 25px !important; /* 加大間距，絕對不擠 */
+            grid-template-columns: repeat(8, 1fr) !important; 
+            gap: 75px 25px !important; 
             max-width: 1550px !important; 
             margin: 0px auto 80px auto !important; 
             position: relative;
@@ -204,13 +181,12 @@ body.mode-neg .expert-card {
         
         body.mode-neg .expert-card {
             --tx: 0px; --ty: 0px; --rot: 0deg; 
-            padding: 15px 5px !important; /* 恢復正常卡片高度 */
-            border-radius: 12px !important; /* 恢復正常圓角 */
-            transform: translate(var(--tx), var(--ty)) rotate(var(--rot)); /* 移除 !important，交給動畫接管 */
+            padding: 15px 5px !important; 
+            border-radius: 12px !important; 
+            transform: translate(var(--tx), var(--ty)) rotate(var(--rot)); 
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s !important;
         }
 
-/* 🔥 8 欄位最終校正版：極致深 U 曲線 + 卡片絕對端正 */
         body.mode-neg .expert-card:nth-child(8n + 1) { --tx: 45px;  --ty: -125px; --rot: -1.5deg; }
         body.mode-neg .expert-card:nth-child(8n + 2) { --tx: 25px;  --ty: -65px;  --rot: -0.8deg; }
         body.mode-neg .expert-card:nth-child(8n + 3) { --tx: 10px;  --ty: -20px;  --rot: -0.3deg; }
@@ -220,14 +196,12 @@ body.mode-neg .expert-card {
         body.mode-neg .expert-card:nth-child(8n + 7) { --tx: -25px; --ty: -65px;  --rot: 0.8deg;  }
         body.mode-neg .expert-card:nth-child(8n + 8) { --tx: -45px; --ty: -125px; --rot: 1.5deg;  }
 
-/* 💡 滑鼠懸停修復：取消旋轉、微微放大、突顯層級，解決疊在一起看不到字的問題 */
         body.mode-neg .expert-card:hover {
             transform: translate(calc(var(--tx) * 0.8), calc(var(--ty) - 20px)) rotate(0deg) scale(1.3) !important;
             z-index: 100 !important;
             box-shadow: 0 15px 35px rgba(220, 38, 38, 0.7) !important;
         }
 
-        /* 🔥 反向魔法專屬「點選」狀態：紅光、浮起、暗紅底，徹底蓋掉原本的藍色 */
         body.mode-neg .expert-card.active {
             transform: translate(calc(var(--tx) * 0.8), calc(var(--ty) - 20px)) rotate(0deg) scale(1.2) !important;
             z-index: 95 !important;
@@ -236,7 +210,6 @@ body.mode-neg .expert-card {
             box-shadow: 0 0 25px 5px rgba(220, 38, 38, 0.8) !important;
         }
         
-        /* 🔥 前三名頒獎台的反向點選狀態 */
         body.mode-neg .podium-card.active {
             border: 3px solid #ef4444 !important;
             background: linear-gradient(135deg, #991b1b, #450a0a) !important;
