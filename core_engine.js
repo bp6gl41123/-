@@ -44,6 +44,17 @@ if (!document.getElementById('pickTooltipStyle')) {
                 justify-content: center !important;
             }
 
+            /* 🚀 終極修復 (您神觀察抓出的元凶)：限制手機版飛入動畫的距離！
+               防止卡片從 1200px 外飛入時，瞬間撐開 LINE 瀏覽器產生無法復原的大白邊 */
+            .expert-card:nth-child(4n+1) { --rx: -100px !important; --ry: -100px !important; }
+            .expert-card:nth-child(4n+2) { --rx: 100px !important;  --ry: -100px !important; }
+            .expert-card:nth-child(4n+3) { --rx: -100px !important; --ry: 100px !important;  }
+            .expert-card:nth-child(4n+4) { --rx: 100px !important;  --ry: 100px !important;  }
+            
+            .podium-card:nth-child(1) { --rx: 0px !important;    --ry: -120px !important; }
+            .podium-card:nth-child(2) { --rx: -100px !important; --ry: 0px !important;    }
+            .podium-card:nth-child(3) { --rx: 100px !important;  --ry: 0px !important;    }
+
         }
 
 .pick-tooltip { 
