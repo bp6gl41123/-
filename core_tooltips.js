@@ -67,9 +67,13 @@ window.getPickTooltipHtml = function(name) {
 
     let finalContent = "";
 
-    // 🎯 建立專屬排版引擎：將單行文字自動轉換為「垂直清單」
+// 🎯 建立專屬排版引擎：將單行文字自動轉換為「垂直清單」
     const formatVertical = (text) => {
         if (!text) return '';
+        
+        // 🚀 終極修復：如果您已經手動加入 <br>，就直接原封不動回傳，絕對不要去切「時間的冒號」！
+        if (text.includes('<br>')) return text;
+
         if (text.includes('\n')) return text.replace(/\n/g, '<br>');
         
         if (text.includes('：') || text.includes(':')) {
