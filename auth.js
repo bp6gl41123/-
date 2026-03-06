@@ -1,86 +1,81 @@
 /* ========================================== */
 /* ==== 【開發模組：雙軌金鑰驗證 - auth.js】 ==== */
-/* ==== (V15.0 7天次防護 + 點擊限制版) ==== */
+/* ==== (V15.1 7天次防護 + 點擊限制版) ==== */
 /* ========================================== */
 
-// 追蹤器狀態變數
-let isRestrictedMode = false; // 是否進入限制模式
-let validClickCount = 0;      // 記錄點擊次數
-const MAX_CLICKS = 3;         // 允許的免費點擊次數
-const FREE_DAYS_LIMIT = 7;    // 免費觀看天次數
+let isRestrictedMode = false; 
+let validClickCount = 0;      
+const MAX_CLICKS = 3;         
+const FREE_DAYS_LIMIT = 7;    
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. 檢查是否有已驗證的金鑰 (超級用戶或已解鎖成員直接放行)
+    // 1. 檢查是否有已驗證的超級金鑰
     const savedKey = sessionStorage.getItem('verifiedKey');
     if (typeof config !== 'undefined' && savedKey) {
         if (savedKey === atob(config.adminCode) || savedKey === atob(config.memberCode)) {
             window.isAdmin = (savedKey === atob(config.adminCode));
-            unlockSystem();
+            fullUnlockSystem(); // 這是已經輸入過密碼的「完全解鎖」
             return; 
         }
     }
 
     // 2. 啟動天次數追蹤
     trackVisitorDays();
+
+    // 3. 🌟 關鍵修正：一進來先幫訪客「開門」看畫面！
+    // 不管他是第 1 天還是第 8 天，預設一進來都要能看見主畫面
+    window.isAdmin = false;
+    openDoorForVisitor(); 
 });
 
+// 紀錄與判斷天次數
 function trackVisitorDays() {
-    // 取得今天的本機日期字串，例如 "2026-03-06"
     const today = new Date().toLocaleDateString('en-CA'); 
-    
-    // 從 LocalStorage 拿取歷史紀錄，若無則預設為空陣列
     let visitedDays = JSON.parse(localStorage.getItem('qiJuVisitedDays')) || [];
 
-    // 如果陣列裡沒有今天，代表是今天「第一次」上線，加進去帳本裡！
     if (!visitedDays.includes(today)) {
         visitedDays.push(today);
         localStorage.setItem('qiJuVisitedDays', JSON.stringify(visitedDays));
-        console.log(`📅 新增登入天次！目前已累積使用：${visitedDays.length} 天`);
+        console.log(`📅 新增登入天次！目前累積：${visitedDays.length} 天`);
     } else {
-        console.log(`📅 今日已記錄。目前累積使用：${visitedDays.length} 天`);
+        console.log(`📅 今日已記錄。目前累積：${visitedDays.length} 天`);
     }
 
-    // 判斷是否超過 7 天
     if (visitedDays.length > FREE_DAYS_LIMIT) {
-        isRestrictedMode = true;
-        console.log(`🚨 已超過 ${FREE_DAYS_LIMIT} 天免費額度！啟動點擊限制模式。`);
+        isRestrictedMode = true; // 超過 7 天，啟動點擊限制！
+        console.log(`🚨 已超過 7 天免費額度！啟動限制模式。`);
     }
 }
 
-// 3. 全域點擊監聽 (Capture 階段，確保比其他點擊事件早觸發)
+// 全域點擊監聽 (攔截第 4 次點擊)
 document.addEventListener('click', (e) => {
-    // 如果還沒被限制，或者已經解鎖，直接放行
     if (!isRestrictedMode) return;
-
-    // 如果點擊的是金鑰彈窗本身（輸入密碼、按按鈕），不計算在內，直接放行
     if (e.target.closest('#authGate')) return;
 
-    // 增加有效點擊次數 (純滑動網頁不會算進去)
     validClickCount++;
     console.log(`🖱️ 限制模式 - 第 ${validClickCount} 次點擊`);
 
-    // 第 4 次點擊，強制阻斷並跳出金鑰視窗
     if (validClickCount > MAX_CLICKS) {
-        e.preventDefault();  // 阻斷超連結
-        e.stopPropagation(); // 阻斷卡片展開或按鈕功能
+        e.preventDefault();  
+        e.stopPropagation(); 
         triggerLockdown();
     }
-}, true); // true 代表優先攔截
+}, true); 
 
-// 觸發封鎖彈窗與 Scatter Fly-In 動畫
+// 第 4 次點擊觸發：關門放狗 (彈出金鑰視窗)
 function triggerLockdown() {
     const authGate = document.getElementById('authGate');
     const authBox = document.querySelector('.auth-box');
     
     if (authGate && authBox) {
-        // 動態修改彈窗文案，增加威嚇感與行動呼籲
+        // 動態修改彈窗文案
         const title = authBox.querySelector('h1');
         const subtitle = authBox.querySelector('p');
         if(title) title.innerHTML = "⚠️ 試用額度已滿";
         if(subtitle) subtitle.innerHTML = "您的 7 天免費使用權限已達上限！<br>請截圖此畫面並私訊版大索取今日專屬金鑰。";
 
-        // 加入動畫 class 並顯示
-        authGate.classList.add('scatter-fly-in');
+        authGate.style.display = 'flex'; // 把視窗叫出來
+        authGate.classList.add('scatter-fly-in'); // 加上碎裂飛入動畫
     }
 }
 
@@ -96,16 +91,15 @@ function checkPasscode() {
         if (userInput === ADMIN_KEY) {
             window.isAdmin = true;
             sessionStorage.setItem('verifiedKey', ADMIN_KEY);
-            unlockSystem();
+            fullUnlockSystem();
         } else if (userInput === MEMBER_KEY) {
             window.isAdmin = false;
             sessionStorage.setItem('verifiedKey', MEMBER_KEY);
-            unlockSystem();
+            fullUnlockSystem();
         } else {
             errorMsg.style.display = 'block';
             const authBox = document.querySelector('.auth-box');
             if (authBox) {
-                // 密碼錯誤的高級震動特效
                 authBox.style.transform = 'translateX(10px)';
                 setTimeout(() => authBox.style.transform = 'translateX(-10px)', 100);
                 setTimeout(() => authBox.style.transform = 'translateX(0)', 200);
@@ -116,19 +110,35 @@ function checkPasscode() {
     }
 }
 
-// 解鎖系統並移除限制
-function unlockSystem() {
+// 🌟 新增：專給一般訪客的「純開門」，不解除限制
+function openDoorForVisitor() {
     const authGate = document.getElementById('authGate');
+    const mainContent = document.getElementById('mainContent');
+    
+    if (authGate) authGate.style.display = 'none'; // 隱藏金鑰視窗
+    if (mainContent) mainContent.style.display = 'block'; // 顯示主畫面
+
+    if (typeof window.init === 'function') {
+        window.init(); // 啟動齊聚眾選的資料渲染
+    }
+}
+
+// 輸入正確密碼後的「完全解鎖」
+function fullUnlockSystem() {
+    const authGate = document.getElementById('authGate');
+    const mainContent = document.getElementById('mainContent');
+    
     if (authGate) {
         authGate.classList.remove('scatter-fly-in');
-        authGate.style.display = 'none'; // 隱藏視窗
+        authGate.style.display = 'none'; 
     }
+    if (mainContent) mainContent.style.display = 'block';
 
-    // 解除點擊限制，讓他可以正常瀏覽
+    // 完全解除點擊限制
     isRestrictedMode = false;
     validClickCount = 0;
 
-    // 啟動管理員功能
+    // 啟動管理員專屬功能
     if (window.isAdmin === true) {
         if (typeof window.initAdminWidget === 'function') window.initAdminWidget();
         if (typeof window.initBackupWidget === 'function') window.initBackupWidget();
@@ -139,10 +149,10 @@ function unlockSystem() {
     }
 }
 
-// 支援 Enter 鍵輸入密碼
+// 支援 Enter 鍵
 document.addEventListener('keypress', (e) => {
     const authGate = document.getElementById('authGate');
-    if (authGate && e.key === 'Enter' && authGate.classList.contains('scatter-fly-in')) {
+    if (authGate && authGate.style.display !== 'none' && e.key === 'Enter') {
         checkPasscode();
     }
 });
