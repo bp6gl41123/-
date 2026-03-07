@@ -176,42 +176,44 @@ if (!document.getElementById('pickTooltipStyle')) {
         body.mode-neg .sleep-card .badge { background-color: #1e293b !important; color: #475569 !important; }
         body.mode-neg .sleep-card .sleep-text { color: #334155 !important; }
 
+        /* ✅ 這是新的 (只留這個就好！) */
         body.mode-neg #expertGrid { 
             display: grid !important;
             grid-template-columns: repeat(8, 1fr) !important; 
-            gap: 75px 25px !important; 
+            gap: 12px !important; /* 🎯 修正點：改為 12px，讓上下排間距恢復正常 */
             max-width: 1550px !important; 
-            margin: 0px auto 80px auto !important; 
+            margin: 0px auto 30px auto !important; /* 🎯 修正點：下方留白恢復正常的 30px */
             position: relative;
             z-index: 50; 
-            padding: 0 30px; 
+            padding: 0 20px; 
         }
         
+        body.mode-neg #expertGrid { 
+            display: grid !important;
+            grid-template-columns: repeat(8, 1fr) !important; 
+            gap: 12px !important; /* 🎯 修正點：改為 12px，讓上下排間距恢復正常 */
+            max-width: 1550px !important; 
+            margin: 0px auto 30px auto !important; /* 🎯 修正點：下方留白恢復正常的 30px */
+            position: relative;
+            z-index: 50; 
+            padding: 0 20px; 
+        }
+        
+        /* 🚨 已經移除反向 U 形排列，恢復為原本正常的網格排版，同時保留紅光特效 */
         body.mode-neg .expert-card {
-            --tx: 0px; --ty: 0px; --rot: 0deg; 
             padding: 15px 5px !important; 
             border-radius: 12px !important; 
-            transform: translate(var(--tx), var(--ty)) rotate(var(--rot)); 
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s !important;
         }
 
-        body.mode-neg .expert-card:nth-child(8n + 1) { --tx: 45px;  --ty: -125px; --rot: -1.5deg; }
-        body.mode-neg .expert-card:nth-child(8n + 2) { --tx: 25px;  --ty: -65px;  --rot: -0.8deg; }
-        body.mode-neg .expert-card:nth-child(8n + 3) { --tx: 10px;  --ty: -20px;  --rot: -0.3deg; }
-        body.mode-neg .expert-card:nth-child(8n + 4) { --tx: 0px;   --ty: 0px;    --rot: 0deg;    }
-        body.mode-neg .expert-card:nth-child(8n + 5) { --tx: 0px;   --ty: 0px;    --rot: 0deg;    }
-        body.mode-neg .expert-card:nth-child(8n + 6) { --tx: -10px; --ty: -20px;  --rot: 0.3deg;  }
-        body.mode-neg .expert-card:nth-child(8n + 7) { --tx: -25px; --ty: -65px;  --rot: 0.8deg;  }
-        body.mode-neg .expert-card:nth-child(8n + 8) { --tx: -45px; --ty: -125px; --rot: 1.5deg;  }
-
         body.mode-neg .expert-card:hover {
-            transform: translate(calc(var(--tx) * 0.8), calc(var(--ty) - 20px)) rotate(0deg) scale(1.3) !important;
+            transform: translateY(-2px) scale(1.02) !important;
             z-index: 100 !important;
             box-shadow: 0 15px 35px rgba(220, 38, 38, 0.7) !important;
         }
 
         body.mode-neg .expert-card.active {
-            transform: translate(calc(var(--tx) * 0.8), calc(var(--ty) - 20px)) rotate(0deg) scale(1.2) !important;
+            transform: translateY(-2px) scale(1.02) !important;
             z-index: 95 !important;
             border: 2.5px solid #ef4444 !important;
             background-color: #450a0a !important;
