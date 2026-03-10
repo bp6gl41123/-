@@ -42,7 +42,7 @@ if (!document.getElementById('pickTooltipStyle')) {
         @media (max-width: 768px) {
             /* 手機版泡泡框稍微再縮小一點，更貼合邊緣 */
             .pick-tooltip-container { top: -6px !important; right: -6px !important; }
-.pick-icon { font-size: 12px !important; padding: 2px 5px !important; min-width: 26px; min-height: 26px; }
+.pick-icon { font-size: 10px !important; padding: 1px 4px !important; min-width: 22px; min-height: 22px; }
             
             /* 對策二：高度鎖死。強制卡片統一高度，並將內容垂直置中 */
             .expert-card, body.mode-neg .expert-card { 
