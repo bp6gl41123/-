@@ -25,7 +25,7 @@ if (!document.getElementById('pickTooltipStyle')) {
 
 .pick-icon { font-size: 16px; padding: 4px 8px !important; border: 2px solid #fff !important; box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important; background: #fffbeb; border-radius: 20px; cursor: pointer; transition: 0.2s; min-width: 34px; min-height: 34px; display: inline-flex !important; align-items: center; justify-content: center; }
 
-        .pick-icon:hover { transform: scale(1.1); background: #fef3c7; }
+        @media (pointer: coarse) { .pick-icon { font-size: 10px !important; min-width: 20px !important; min-height: 20px !important; padding: 1px 3px !important; } }
 
         /* 🎯 核心升級三：名字優雅省略化 (單行超出自動變...，絕對防禦破版) */
         .expert-card .name { 
