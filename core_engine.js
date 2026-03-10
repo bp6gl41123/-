@@ -23,7 +23,7 @@ if (!document.getElementById('pickTooltipStyle')) {
         .pk-column .pick-tooltip-container { position: relative !important; top: auto !important; right: auto !important; margin-left: 10px !important; display: inline-flex !important; }
         .pk-column .pick-icon { animation: floatPulse 2s infinite ease-in-out !important; }
 
-.pick-icon { font-size: 16px !important; padding: 4px 8px !important; border: 2px solid #fff !important; box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important; background: #fffbeb; border-radius: 20px; cursor: pointer; transition: 0.2s; min-width: 34px; min-height: 34px; display: inline-flex !important; align-items: center; justify-content: center; }
+.pick-icon { font-size: 16px; padding: 4px 8px !important; border: 2px solid #fff !important; box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important; background: #fffbeb; border-radius: 20px; cursor: pointer; transition: 0.2s; min-width: 34px; min-height: 34px; display: inline-flex !important; align-items: center; justify-content: center; }
 
         .pick-icon:hover { transform: scale(1.1); background: #fef3c7; }
 
