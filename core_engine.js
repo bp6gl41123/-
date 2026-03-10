@@ -17,13 +17,14 @@ if (!document.getElementById('pickTooltipStyle')) {
         .expert-card { position: relative !important; } /* 確保泡泡能精準掛在卡片右上角 */
 
 /* 🎯 核心升級二：泡泡框絕對懸浮化 (脫離空間搶奪，變成右上角小紅點) */
-        .pick-tooltip-container { position: absolute !important; top: -8px !important; right: -8px !important; margin-left: 0 !important; z-index: 5 !important; }
+.pick-tooltip-container { position: absolute !important; top: -8px !important; right: -8px !important; margin-left: 0 !important; z-index: 5 !important; }
         
         /* 💡 修正對策：對比卡片內部的泡泡框恢復「名字後方模式」，避免撞到右上角的關閉按鈕 */
         .pk-column .pick-tooltip-container { position: relative !important; top: auto !important; right: auto !important; margin-left: 10px !important; display: inline-flex !important; }
         .pk-column .pick-icon { animation: floatPulse 2s infinite ease-in-out !important; }
 
-        .pick-icon { font-size: 12px !important; padding: 2px 6px !important; border: 2px solid #fff !important; box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important; background: #fffbeb; border-radius: 20px; cursor: pointer; transition: 0.2s; }
+.pick-icon { font-size: 16px !important; padding: 4px 8px !important; border: 2px solid #fff !important; box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important; background: #fffbeb; border-radius: 20px; cursor: pointer; transition: 0.2s; min-width: 34px; min-height: 34px; display: inline-flex !important; align-items: center; justify-content: center; }
+
         .pick-icon:hover { transform: scale(1.1); background: #fef3c7; }
 
         /* 🎯 核心升級三：名字優雅省略化 (單行超出自動變...，絕對防禦破版) */
@@ -41,7 +42,7 @@ if (!document.getElementById('pickTooltipStyle')) {
         @media (max-width: 768px) {
             /* 手機版泡泡框稍微再縮小一點，更貼合邊緣 */
             .pick-tooltip-container { top: -6px !important; right: -6px !important; }
-            .pick-icon { font-size: 11px !important; padding: 1px 5px !important; }
+.pick-icon { font-size: 14px !important; padding: 3px 6px !important; min-width: 30px; min-height: 30px; }
             
             /* 對策二：高度鎖死。強制卡片統一高度，並將內容垂直置中 */
             .expert-card, body.mode-neg .expert-card { 
