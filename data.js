@@ -187,7 +187,7 @@ const defaultDB = {
             ]
         ]
     },
-    "Yulu": {
+    "Yu lu": {
         "mlb_ml": [
             [
                 "03/11",
