@@ -12,6 +12,7 @@
 </script>
 
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -236,7 +237,7 @@
         .btn-back { background: #64748b; color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 20px; transition: 0.2s; }
         .btn-back:hover { background: #475569; }
         
-        .bar-chart-area { margin-top: 30px; border-left: 4px solid #cbd5e1; padding-left: 20px; min-height: 400px; }
+        .bar-chart-area { margin-top: 30px; border-left: 4px solid #cbd5e1; padding-left: 20px; min-height: unset; }
         .bar-row { display: flex; align-items: center; margin-bottom: 18px; animation: fadeInRight 0.5s ease forwards; opacity: 0; }
         .bar-name { width: 360px; font-weight: 900; font-size: 16px; color: #1e293b; display: flex; align-items: center; justify-content: flex-end; padding-right: 15px; }
         .bar-wrapper { flex: 1; height: 38px; background: #f1f5f9; border-radius: 6px; overflow: hidden; position: relative; }
@@ -323,18 +324,21 @@
         }
 
     </style> 
+
+</style>
+<script>
+(function() {
+    if (window.innerWidth < 980) {
+        document.documentElement.style.visibility = 'hidden';
+    }
+})();
+</script>
+
 </head>
 <body>
 
-    <div id="authGate">
-
-        <div class="auth-box">
-            <h1 style="color:#60a5fa; margin-top:0;">🏆 齊聚眾選 - 戰務系統</h1>
-            <p style="color:#cbd5e1; margin-bottom: 25px;">請輸入今日專屬通行密鑰</p>
-            <input type="password" id="passcodeInput" class="auth-input" placeholder="輸入今日密鑰">
-            <button class="auth-btn" onclick="checkPasscode()">解鎖看板 🔓</button>
-            <p id="errorMsg" style="color:#ef4444; font-size:14px; margin-top:15px; display:none;">❌ 密鑰錯誤或已過期</p>
-        </div>
+    <div id="authGate" style="display:none; position:fixed; inset:0; z-index:9999;">
+        <iframe id="pricingFrame" src="pricing_v2.html" style="width:100%; height:100%; border:none; overflow-y:auto;" allow="popups"></iframe>
     </div>
 
 <div id="mainContent">
@@ -391,9 +395,9 @@
         </div>
     </div>
     <script src="config.js?v=1.0.69"></script>
-    <script src="data.js?v=1.0.22"></script>
-    <script src="auth.js?v=1.0.15"></script>
-    <script src="core_admin.js?v=1.0.22"></script>
+    <script src="data.js?v=1.0.21"></script>
+    <script src="auth.js?v=1.0.14"></script>
+    <script src="core_admin.js?v=1.0.21"></script>
     <script src="core_backup.js?v=1.0.13"></script>
     <script src="core_settle.js?v=1.0.9"></script>
     <script src="core_pocket.js?v=1.0.18"></script>
@@ -402,7 +406,39 @@
     <script src="core_trend.js?v=1.0.9"></script>
     <script src="core_ranking.js?v=1.0.15"></script>
     <script src="core_recruit.js?v=1.0.19"></script>
-    <script src="core_engine.js?v=1.0.61"></script>
+    <script src="core_engine.js?v=1.0.60"></script>
+
+<script>
+(function() {
+    function scalePage() {
+        var content = document.getElementById('mainContent');
+        if (!content) return;
+        if (window.innerWidth < 768) {
+            var scale = window.innerWidth / 980;
+            content.style.transformOrigin = 'top left';
+            content.style.transform = 'scale(' + scale + ')';
+            content.style.width = '980px';
+            content.style.height = Math.round(window.innerWidth / scale) + 'px';
+            document.body.style.overflowX = 'hidden';
+        } else {
+            content.style.transform = '';
+            content.style.width = '';
+            content.style.marginBottom = '';
+        }
+        document.documentElement.style.visibility = 'visible';
+    }
+    window.addEventListener('load', scalePage);
+    window.addEventListener('resize', scalePage);
+})();
+</script>
+
+<script>
+(function() {
+    if (window.innerWidth < 768) {
+        document.documentElement.style.visibility = 'hidden';
+    }
+})();
+</script>
 
 </body>
 </html>
